@@ -4,31 +4,31 @@ import { motion, AnimatePresence } from 'framer-motion';
 const images = [
   {
     src: 'https://imgur.com/LeMGEgR.jpg',
-    info: 'Vista panorámica de la playa y el resort'
+    info: 'Panoramic view of the beach and resort'
   },
   {
     src: 'https://imgur.com/TMyMETs.jpg',
-    info: 'Hermosa piscina infinita con vista al océano'
+    info: 'Beautiful infinity pool with ocean view'
   },
   {
     src: 'https://imgur.com/pKNXJ8j.jpg',
-    info: 'Lujosas habitaciones con balcón y vista al mar'
+    info: 'Luxurious rooms with balcony and sea view'
   },
   {
     src: 'https://imgur.com/DRnBROY.jpg',
-    info: 'Espectacular atardecer en la playa del resort'
+    info: 'Spectacular sunset at the resort beach'
   },
   {
     src: 'https://imgur.com/850JOSq.jpg',
-    info: 'Área de playa privada con tumbonas y sombrillas'
+    info: 'Private beach area with loungers and umbrellas'
   },
   {
     src: 'https://imgur.com/s5LURP6.jpg',
-    info: 'Elegante restaurante con vista al océano'
+    info: 'Elegant restaurant with ocean view'
   },
   {
     src: 'https://imgur.com/qx74qKE.jpg',
-    info: 'Impresionante vista aérea del resort y sus alrededores'
+    info: 'Breathtaking aerial view of the resort and surroundings'
   }
 ];
 
