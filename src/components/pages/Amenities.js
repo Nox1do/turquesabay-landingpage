@@ -17,6 +17,9 @@ function Amenities() {
   const [lottieLoaded, setLottieLoaded] = useState(false);
   const [lottieError, setLottieError] = useState(false);
 
+  const [touchedArea, setTouchedArea] = useState(null);
+  const [isTouching, setIsTouching] = useState(false);
+
   useEffect(() => {
     const img = new Image();
     img.src = 'https://imgur.com/7LcsP6I.jpg';
@@ -285,19 +288,30 @@ function Amenities() {
                               fill: rgba(0, 0, 0, 0);
                               transition: all 0.3s ease;
                               cursor: pointer;
+                              stroke: rgba(255, 255, 255, 0.3);
+                              stroke-width: 1px;
                             }
-                            g:hover .image-mapper-shape {
+                            g:hover .image-mapper-shape,
+                            g:active .image-mapper-shape {
                               fill: rgba(20, 184, 166, 0.5);
                               stroke: white;
                               stroke-width: 2px;
                             }
                             .speech-bubble-text {
-                              font-size: 14px;
+                              font-size: 16px;
                               font-weight: bold;
                               fill: white;
                               stroke: black;
                               stroke-width: 0.5px;
                               paint-order: stroke fill;
+                            }
+                            @media (max-width: 768px) {
+                              .speech-bubble-text {
+                                font-size: 18px;
+                              }
+                              .image-mapper-shape {
+                                stroke-width: 2px;
+                              }
                             }
                           `}
                         </style>
@@ -311,6 +325,18 @@ function Amenities() {
                             onMouseEnter={() => setHoveredArea(area.title)}
                             onMouseLeave={() => setHoveredArea(null)}
                             onClick={() => openModal(area)}
+                            onTouchStart={() => {
+                              setTouchedArea(area.title);
+                              setIsTouching(true);
+                            }}
+                            onTouchEnd={() => {
+                              if (isTouching) {
+                                openModal(area);
+                              }
+                              setTouchedArea(null);
+                              setIsTouching(false);
+                            }}
+                            onTouchMove={() => setIsTouching(false)}
                           >
                             <polygon
                               className="image-mapper-shape"
@@ -322,7 +348,7 @@ function Amenities() {
                               textAnchor="middle"
                               className="speech-bubble-text"
                             >
-                              {hoveredArea === area.title ? area.title : ''}
+                              {(hoveredArea === area.title || touchedArea === area.title) ? area.title : ''}
                             </text>
                           </g>
                         ))}
