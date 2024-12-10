@@ -57,12 +57,36 @@ function Amenities() {
   };
 
   const amenities = [
-    { name: 'Swimming Pool', description: 'Relax by our luxurious infinity pool' },
-    { name: 'Fitness Center', description: 'State-of-the-art equipment for your workout needs' },
-    { name: 'Spa', description: 'Indulge in our rejuvenating spa treatments' },
-    { name: 'Restaurant', description: 'Enjoy gourmet cuisine with ocean views' },
-    { name: 'Beach Access', description: 'Direct access to pristine white sand beaches' },
-    { name: 'Concierge Service', description: '24/7 concierge to cater to your every need' },
+    {
+      title: "Swimming Pool",
+      description: "Enjoy our luxurious outdoor pool",
+      image: "https://images.pexels.com/photos/61129/pexels-photo-61129.jpeg"
+    },
+    { 
+      title: "Fitness Center", 
+      description: "State-of-the-art equipment for your workout needs",
+      image: "https://images.pexels.com/photos/16513602/pexels-photo-16513602/free-photo-of-body-building-equipment-in-sunlight-and-shadow.jpeg"
+    },
+    {
+      title: "Spa",
+      description: "Relax and rejuvenate in our premium spa",
+      image: "https://images.pexels.com/photos/6663571/pexels-photo-6663571.jpeg"
+    },
+    {
+      title: "Restaurant",
+      description: "Enjoy exquisite cuisine with ocean views",
+      image: "https://images.pexels.com/photos/4543004/pexels-photo-4543004.jpeg"
+    },
+    {
+      title: "Beach Access",
+      description: "Direct access to pristine sandy beaches with stunning ocean views",
+      image: "https://images.pexels.com/photos/29705734/pexels-photo-29705734/free-photo-of-woman-practicing-yoga-on-sandy-beach.jpeg"
+    },
+    {
+      title: "Concierge Service",
+      description: "24/7 personalized concierge service to assist with all your needs and requests",
+      image: "https://images.pexels.com/photos/6197123/pexels-photo-6197123.jpeg"
+    },
   ];
 
   const [selectedArea, setSelectedArea] = useState(null);
@@ -203,10 +227,18 @@ function Amenities() {
                     className="bg-white bg-opacity-80 rounded-lg shadow-md overflow-hidden"
                   >
                     <div className="h-48 bg-gray-300 flex items-center justify-center">
-                      <span className="text-gray-500 text-lg">{amenity.name} Image</span>
+                      {amenity.image ? (
+                        <img 
+                          src={amenity.image} 
+                          alt={amenity.title}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <span className="text-gray-500 text-lg">{amenity.title} Image</span>
+                      )}
                     </div>
                     <div className="p-4">
-                      <h3 className="text-xl font-semibold text-teal-600 mb-2">{amenity.name}</h3>
+                      <h3 className="text-xl font-semibold text-teal-600 mb-2">{amenity.title}</h3>
                       <p className="text-gray-600">{amenity.description}</p>
                     </div>
                   </motion.div>
@@ -343,7 +375,7 @@ function Amenities() {
                       onClick={closeModal}
                       className="bg-teal-500 text-white px-4 py-2 rounded hover:bg-teal-600 transition duration-300"
                     >
-                      Cerrar
+                      Close
                     </button>
                     <div className="flex items-center space-x-2 flex-1 ml-4">
                       <span className="text-gray-600 whitespace-nowrap">Zoom:</span>
