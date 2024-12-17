@@ -4,8 +4,11 @@ module.exports = {
     "./src/**/*.{js,jsx,ts,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        'summer-vibes': ['Summer Vibes', 'cursive']
+      }
+    },
   },
   plugins: [],
 }
-
