@@ -189,8 +189,8 @@ function Home({ isLoading }) {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.6, delay: 0.6 }}
                     >
-                      <span className="text-teal-400">Dream</span>
-                      <span className="text-[#eeb95d]"> Paradise</span>
+                      <span className="text-teal-400 font-['Summer_Vibes'] text-6xl lg:text-7xl -mt-4 inline-block">Dream</span>{' '}
+                      <span className="text-[#eeb95d] font-['Summer_Vibes'] text-6xl lg:text-7xl -mt-4 inline-block">Paradise</span>
                     </motion.span>
                   </h1>
 
@@ -716,8 +716,8 @@ function Home({ isLoading }) {
                       className="text-4xl lg:text-6xl font-bold leading-tight"
                     >
                       <span className="text-white">Live an </span>
-                      <span className="text-teal-400">Unforgettable </span>
-                      <span className="text-[#eeb95d]">Experience</span>
+                      <span className="text-teal-400 font-['Summer_Vibes'] text-3xl lg:text-5xl -mt-4 inline-block">Unforgettable </span>
+                      <span className="text-[#eeb95d] font-['Summer_Vibes'] text-3xl lg:text-5xl -mt-4 inline-block">Experience</span>
                     </motion.h2>
 
                     <motion.p
