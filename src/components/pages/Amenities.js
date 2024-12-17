@@ -21,6 +21,16 @@ function Amenities() {
   const [touchedArea, setTouchedArea] = useState(null);
   const [isTouching, setIsTouching] = useState(false);
 
+  const [selectedArea, setSelectedArea] = useState(null);
+  const [activeTab, setActiveTab] = useState('bloqueD');
+
+  // Añadir estados para el manejo táctil
+  const [touchStartDistance, setTouchStartDistance] = useState(null);
+  const [currentScale, setCurrentScale] = useState(1);
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragPosition, setDragPosition] = useState({ x: 0, y: 0 });
+  const [startPosition, setStartPosition] = useState({ x: 0, y: 0 });
+
   useEffect(() => {
     const img = new Image();
     img.src = 'https://imgur.com/7LcsP6I.jpg';
@@ -65,7 +75,7 @@ function Amenities() {
       title: "Swimming Pool",
       description: "Enjoy our luxurious outdoor pool with infinite ocean views",
       image: "https://images.pexels.com/photos/61129/pexels-photo-61129.jpeg",
-      icon: <FaSwimmer className="w-8 h-8" />,
+      icon: <FaSwimmer className="w-8 h-8 text-white group-hover:text-teal-200 transition-colors duration-300" />,
       gradient: "from-cyan-400 to-blue-500",
       features: ["Infinity Edge", "Heated Pool", "Loungers", "Pool Bar"]
     },
@@ -73,7 +83,7 @@ function Amenities() {
       title: "Fitness Center", 
       description: "State-of-the-art equipment to maintain your fitness routine",
       image: "https://images.pexels.com/photos/16513602/pexels-photo-16513602/free-photo-of-body-building-equipment-in-sunlight-and-shadow.jpeg",
-      icon: <FaDumbbell className="w-8 h-8" />,
+      icon: <FaDumbbell className="w-8 h-8 text-white group-hover:text-teal-200 transition-colors duration-300" />,
       gradient: "from-orange-400 to-red-500",
       features: ["Modern Equipment", "Personal Training", "Yoga Studio", "24/7 Access"]
     },
@@ -81,7 +91,7 @@ function Amenities() {
       title: "Spa",
       description: "Relax and rejuvenate in our premium spa",
       image: "https://images.pexels.com/photos/6663571/pexels-photo-6663571.jpeg",
-      icon: <FaSpa className="w-8 h-8" />,
+      icon: <FaSpa className="w-8 h-8 text-white group-hover:text-teal-200 transition-colors duration-300" />,
       gradient: "from-purple-400 to-pink-500",
       features: ["Massage Therapy", "Sauna", "Beauty Salon", "Wellness Center"]
     },
@@ -89,7 +99,7 @@ function Amenities() {
       title: "Restaurant",
       description: "Experience exquisite cuisine with stunning ocean views",
       image: "https://images.pexels.com/photos/4543004/pexels-photo-4543004.jpeg",
-      icon: <FaUtensils className="w-8 h-8" />,
+      icon: <FaUtensils className="w-8 h-8 text-white group-hover:text-teal-200 transition-colors duration-300" />,
       gradient: "from-yellow-400 to-orange-500",
       features: ["Gourmet Menu", "Ocean View", "Wine Cellar", "Private Events"]
     },
@@ -97,7 +107,7 @@ function Amenities() {
       title: "Beach Access",
       description: "Direct access to pristine beaches with breathtaking ocean views",
       image: "https://images.pexels.com/photos/29705734/pexels-photo-29705734/free-photo-of-woman-practicing-yoga-on-sandy-beach.jpeg",
-      icon: <FaUmbrellaBeach className="w-8 h-8" />,
+      icon: <FaUmbrellaBeach className="w-8 h-8 text-white group-hover:text-teal-200 transition-colors duration-300" />,
       gradient: "from-blue-400 to-indigo-500",
       features: ["Private Beach", "Water Sports", "Beach Service", "Sunset Views"]
     },
@@ -105,13 +115,11 @@ function Amenities() {
       title: "Concierge Service",
       description: "24/7 personalized concierge service to cater to all your needs",
       image: "https://images.pexels.com/photos/6197123/pexels-photo-6197123.jpeg",
-      icon: <FaConciergeBell className="w-8 h-8" />,
+      icon: <FaConciergeBell className="w-8 h-8 text-white group-hover:text-teal-200 transition-colors duration-300" />,
       gradient: "from-emerald-400 to-teal-500",
       features: ["24/7 Service", "Tour Planning", "Transportation", "Reservations"]
     }
   ];
-
-  const [selectedArea, setSelectedArea] = useState(null);
 
   const openModal = (area) => {
     setSelectedArea(area);
@@ -124,7 +132,9 @@ function Amenities() {
   };
 
   const handleZoom = (newZoom) => {
-    setZoomLevel(Math.min(100, Math.max(0, newZoom)));
+    // Permitir zoom hasta 200% en móvil y 100% en desktop
+    const maxZoom = window.innerWidth > 768 ? 100 : 200;
+    setZoomLevel(Math.min(maxZoom, Math.max(0, newZoom)));
   };
 
   const handleWheel = (e) => {
@@ -159,8 +169,6 @@ function Amenities() {
     { id: 4, points: '474.074,324.558 474.074,364.672 447.331,369.535 427.882,378.044 403.571,384.122 404.786,346.439', image: 'https://i.imgur.com/py4GW1i.png', title: 'Block D-I 2 Rooms', x: 450, y: 350 },
   ];
 
-  const [activeTab, setActiveTab] = useState('bloqueD');
-
   const mapData = {
     bloqueD: {
       image: "https://i.imgur.com/FVfvl08.jpg",
@@ -194,6 +202,51 @@ function Amenities() {
     enter: { opacity: 0, scale: 0.95 },
     center: { opacity: 1, scale: 1 },
     exit: { opacity: 0, scale: 1.05 }
+  };
+
+  // Función para calcular la distancia entre dos puntos táctiles
+  const getTouchDistance = (touches) => {
+    return Math.hypot(
+      touches[0].clientX - touches[1].clientX,
+      touches[0].clientY - touches[1].clientY
+    );
+  };
+
+  // Manejadores de eventos táctiles
+  const handleTouchStart = (e) => {
+    if (e.touches.length === 2) {
+      // Pinch zoom
+      setTouchStartDistance(getTouchDistance(e.touches));
+    } else if (e.touches.length === 1) {
+      // Drag
+      setIsDragging(true);
+      setStartPosition({
+        x: e.touches[0].clientX - dragPosition.x,
+        y: e.touches[0].clientY - dragPosition.y
+      });
+    }
+  };
+
+  const handleTouchMove = (e) => {
+    e.preventDefault();
+    if (e.touches.length === 2 && touchStartDistance !== null) {
+      // Pinch zoom con límite de 200% en móvil
+      const currentDistance = getTouchDistance(e.touches);
+      const scale = (currentDistance / touchStartDistance) * currentScale;
+      const newZoom = Math.min(200, Math.max(0, (scale - 1) * 100));
+      handleZoom(newZoom);
+    } else if (e.touches.length === 1 && isDragging) {
+      // Drag
+      setDragPosition({
+        x: e.touches[0].clientX - startPosition.x,
+        y: e.touches[0].clientY - startPosition.y
+      });
+    }
+  };
+
+  const handleTouchEnd = () => {
+    setTouchStartDistance(null);
+    setIsDragging(false);
   };
 
   return (
@@ -265,10 +318,35 @@ function Amenities() {
                     {/* Contenido de la card */}
                     <div className="relative p-6 z-10">
                       <div className="flex items-center gap-4 mb-6">
-                        <div className={`w-12 h-12 rounded-full ${index % 2 === 0 ? 'bg-teal-500/20' : 'bg-[#eeb95d]/20'} flex items-center justify-center`}>
-                          {amenity.icon}
+                        <div className={`w-12 h-12 rounded-full 
+                                          ${index % 2 === 0 
+                                            ? 'bg-gradient-to-br from-teal-400/30 to-teal-500/20' 
+                                            : 'bg-gradient-to-br from-[#eeb95d]/30 to-yellow-500/20'} 
+                                          flex items-center justify-center transform group-hover:scale-110 transition-all duration-500`}
+                        >
+                          <motion.div
+                            whileHover={{ 
+                              rotate: 12,
+                              scale: 1.1,
+                            }}
+                            transition={{ 
+                              type: "spring",
+                              stiffness: 100,
+                              damping: 10,
+                              mass: 0.8,
+                              duration: 0.8
+                            }}
+                            className="w-full h-full flex items-center justify-center"
+                          >
+                            {amenity.icon}
+                          </motion.div>
                         </div>
-                        <h3 className={`text-2xl font-bold ${index % 2 === 0 ? 'text-teal-400' : 'text-[#eeb95d]'}`}>
+                        <h3 className={`text-2xl font-bold 
+                                          ${index % 2 === 0 
+                                            ? 'bg-gradient-to-r from-teal-300 to-teal-400' 
+                                            : 'bg-gradient-to-r from-[#eeb95d] to-yellow-400'} 
+                                          bg-clip-text text-transparent`}
+                        >
                           {amenity.title}
                         </h3>
                       </div>
@@ -446,6 +524,98 @@ function Amenities() {
                   </div>
                 </div>
               </motion.section>
+
+              {/* Modal para ver los planos */}
+              <AnimatePresence>
+                {selectedArea && (
+                  <motion.div
+                    className="fixed inset-0 bg-black/90 backdrop-blur-md flex items-center justify-center z-50"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    onClick={closeModal}
+                  >
+                    <motion.div
+                      className="relative bg-gradient-to-br from-gray-900/90 to-black/90 p-4 sm:p-8 rounded-3xl border border-white/10 w-full h-full sm:max-w-5xl sm:w-11/12 sm:h-auto sm:max-h-[90vh] overflow-hidden"
+                      initial={{ scale: 0.95, opacity: 0, y: 20 }}
+                      animate={{ scale: 1, opacity: 1, y: 0 }}
+                      exit={{ scale: 0.95, opacity: 0, y: 20 }}
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      {/* Header */}
+                      <div className="flex items-center justify-between mb-4 sm:mb-6">
+                        <h3 className="text-2xl sm:text-3xl font-bold">
+                          <span className="text-teal-400">Floor Plan:</span>{' '}
+                          <span className="text-[#eeb95d]">{selectedArea.title}</span>
+                        </h3>
+                        <button
+                          onClick={closeModal}
+                          className="p-2 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 transition-colors duration-300"
+                        >
+                          <svg className="w-6 h-6 text-white/80" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                          </svg>
+                        </button>
+                      </div>
+
+                      {/* Contenedor de la imagen */}
+                      <div className="relative h-[calc(100vh-8rem)] sm:h-[calc(90vh-12rem)]">
+                        {/* Controles de zoom flotantes */}
+                        <div className="absolute top-4 right-4 flex items-center gap-2 bg-black/50 backdrop-blur-sm p-2 rounded-full border border-white/10 z-10">
+                          <button
+                            onClick={() => handleZoom(Math.max(0, zoomLevel - 20))}
+                            className="p-2 rounded-full hover:bg-white/10 text-white/80 transition-colors"
+                          >
+                            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
+                            </svg>
+                          </button>
+                          <span className="text-white/80 font-medium min-w-[3rem] text-center">{zoomLevel}%</span>
+                          <button
+                            onClick={() => handleZoom(Math.min(window.innerWidth > 768 ? 100 : 200, zoomLevel + 20))}
+                            className="p-2 rounded-full hover:bg-white/10 text-white/80 transition-colors"
+                          >
+                            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                            </svg>
+                          </button>
+                        </div>
+
+                        {/* Contenedor de la imagen con scroll */}
+                        <div 
+                          className="h-full w-full overflow-auto rounded-2xl bg-white/5 border border-white/10"
+                          onWheel={handleWheel}
+                          onTouchStart={handleTouchStart}
+                          onTouchMove={handleTouchMove}
+                          onTouchEnd={handleTouchEnd}
+                        >
+                          <div className="min-h-full min-w-full flex items-center justify-center p-4">
+                            <img
+                              ref={imageRef}
+                              src={selectedArea.image}
+                              alt={selectedArea.title}
+                              className="w-full h-auto object-contain transition-transform duration-300"
+                              style={{
+                                transform: `scale(${1 + zoomLevel / 100}) translate(${dragPosition.x}px, ${dragPosition.y}px)`,
+                                touchAction: 'none'
+                              }}
+                            />
+                          </div>
+                        </div>
+
+                        {/* Instrucciones de uso */}
+                        <div className="absolute bottom-4 left-4 bg-black/50 backdrop-blur-sm px-4 py-2 rounded-full border border-white/10">
+                          <p className="text-white/70 text-sm">
+                            {window.innerWidth > 768 
+                              ? "Use mouse wheel or controls to zoom"
+                              : "Pinch to zoom or use controls"}
+                          </p>
+                        </div>
+                      </div>
+                    </motion.div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </main>
           </div>
         </motion.div>

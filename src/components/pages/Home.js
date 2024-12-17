@@ -729,35 +729,79 @@ function Home({ isLoading }) {
                       Ready to make your dream of owning a luxury beachfront property come true? Contact us now and let us help you discover your perfect paradise in Samaná.
                     </motion.p>
 
-                    {/* Call to Action Card - Visible solo en móvil con diseño mejorado */}
+                    {/* Call to Action Card - Versión Desktop */}
                     <motion.div
                       initial={{ opacity: 0, y: 20 }}
                       whileInView={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.6, delay: 0.4 }}
-                      className="lg:hidden bg-gradient-to-br from-teal-900/80 to-black/80 backdrop-blur-md p-8 rounded-2xl border-2 border-teal-500/30 shadow-lg shadow-teal-500/20"
+                      className="relative max-w-xl lg:mx-0"
                     >
                       <motion.a
                         href="tel:+18294232020"
-                        className="flex flex-col items-center gap-6"
+                        className="hidden lg:flex items-center gap-2 p-4 rounded-2xl border border-teal-400/20"
+                        whileHover={{ scale: 1.02, y: -5 }}
+                        whileTap={{ scale: 0.98 }}
+                        transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                      >
+                        {/* Contenedor principal con flex */}
+                        <div className="flex items-center gap-4">
+                          {/* Icono */}
+                          <div className="relative shrink-0">
+                            <div className="absolute inset-0 bg-teal-400/30 rounded-full animate-ping"></div>
+                            <div className="relative w-14 h-14 rounded-full bg-teal-400 flex items-center justify-center">
+                              <FaPhone className="w-7 h-7 text-white" />
+                            </div>
+                          </div>
+                          
+                          {/* Texto y número en una sola línea */}
+                          <div className="flex items-center">
+                            <p className="text-3xl font-bold whitespace-nowrap">
+                              <span className="text-teal-400">+1 (829)</span>
+                              <span className="mx-1"></span>
+                              <span className="text-[#eeb95d]">423-2020</span>
+                            </p>
+                          </div>
+                        </div>
+
+                        {/* Call Now y flecha */}
+                        <div className="flex items-center gap-2 ml-4">
+                          <span className="text-xl font-bold text-[#eeb95d]">
+                            Call Now
+                          </span>
+                          <motion.div
+                            animate={{ x: [0, 5, 0] }}
+                            transition={{ duration: 1.5, repeat: Infinity }}
+                            className="text-2xl text-[#eeb95d]"
+                          >
+                            →
+                          </motion.div>
+                        </div>
+                      </motion.a>
+
+                      {/* Versión Móvil */}
+                      <motion.a
+                        href="tel:+18294232020"
+                        className="lg:hidden flex flex-col items-center gap-6 p-6 rounded-2xl border border-teal-400/20"
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
                         transition={{ type: "spring", stiffness: 400, damping: 10 }}
                       >
-                        <div className="w-20 h-20 rounded-full bg-teal-500/20 flex items-center justify-center group-hover:bg-[#eeb95d]/20 transition-colors duration-300 animate-pulse">
-                          <FaPhone className="w-10 h-10 text-[#eeb95d]" />
+                        <div className="relative">
+                          <div className="absolute inset-0 bg-teal-400/30 rounded-full animate-ping"></div>
+                          <div className="relative w-20 h-20 rounded-full bg-teal-400 flex items-center justify-center">
+                            <FaPhone className="w-10 h-10 text-white" />
+                          </div>
                         </div>
                         
-                        <div className="text-center space-y-2">
-                          <p className="text-teal-300 text-lg font-medium">Contact Us Now</p>
-                          <p className="text-4xl font-bold text-white">
-                            +1 (829) 423-2020
-                          </p>
-                          <p className="text-teal-200/70 mt-2">
-                            Ready to discover your paradise?
+                        <div className="text-center">
+                          <p className="text-4xl font-bold whitespace-nowrap">
+                            <span className="text-teal-400">+1 (829)</span>
+                            <span className="mx-1"></span>
+                            <span className="text-[#eeb95d]">423-2020</span>
                           </p>
                         </div>
 
-                        <div className="flex items-center gap-2 text-[#eeb95d] font-semibold mt-2">
+                        <div className="flex items-center gap-2 text-[#eeb95d] font-semibold">
                           <span>Tap to call now</span>
                           <motion.div
                             animate={{ x: [0, 5, 0] }}
