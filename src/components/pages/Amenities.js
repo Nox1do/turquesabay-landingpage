@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { FaSwimmer, FaDumbbell, FaSpa, FaUtensils, FaUmbrellaBeach, FaConciergeBell, FaCheck } from 'react-icons/fa';
 
 // Importa el componente de notificación
 import Notification from '../assets/Notification';
@@ -62,34 +63,52 @@ function Amenities() {
   const amenities = [
     {
       title: "Swimming Pool",
-      description: "Enjoy our luxurious outdoor pool",
-      image: "https://images.pexels.com/photos/61129/pexels-photo-61129.jpeg"
+      description: "Enjoy our luxurious outdoor pool with infinite ocean views",
+      image: "https://images.pexels.com/photos/61129/pexels-photo-61129.jpeg",
+      icon: <FaSwimmer className="w-8 h-8" />,
+      gradient: "from-cyan-400 to-blue-500",
+      features: ["Infinity Edge", "Heated Pool", "Loungers", "Pool Bar"]
     },
     { 
       title: "Fitness Center", 
-      description: "State-of-the-art equipment for your workout needs",
-      image: "https://images.pexels.com/photos/16513602/pexels-photo-16513602/free-photo-of-body-building-equipment-in-sunlight-and-shadow.jpeg"
+      description: "State-of-the-art equipment to maintain your fitness routine",
+      image: "https://images.pexels.com/photos/16513602/pexels-photo-16513602/free-photo-of-body-building-equipment-in-sunlight-and-shadow.jpeg",
+      icon: <FaDumbbell className="w-8 h-8" />,
+      gradient: "from-orange-400 to-red-500",
+      features: ["Modern Equipment", "Personal Training", "Yoga Studio", "24/7 Access"]
     },
     {
       title: "Spa",
       description: "Relax and rejuvenate in our premium spa",
-      image: "https://images.pexels.com/photos/6663571/pexels-photo-6663571.jpeg"
+      image: "https://images.pexels.com/photos/6663571/pexels-photo-6663571.jpeg",
+      icon: <FaSpa className="w-8 h-8" />,
+      gradient: "from-purple-400 to-pink-500",
+      features: ["Massage Therapy", "Sauna", "Beauty Salon", "Wellness Center"]
     },
     {
       title: "Restaurant",
-      description: "Enjoy exquisite cuisine with ocean views",
-      image: "https://images.pexels.com/photos/4543004/pexels-photo-4543004.jpeg"
+      description: "Experience exquisite cuisine with stunning ocean views",
+      image: "https://images.pexels.com/photos/4543004/pexels-photo-4543004.jpeg",
+      icon: <FaUtensils className="w-8 h-8" />,
+      gradient: "from-yellow-400 to-orange-500",
+      features: ["Gourmet Menu", "Ocean View", "Wine Cellar", "Private Events"]
     },
     {
       title: "Beach Access",
-      description: "Direct access to pristine sandy beaches with stunning ocean views",
-      image: "https://images.pexels.com/photos/29705734/pexels-photo-29705734/free-photo-of-woman-practicing-yoga-on-sandy-beach.jpeg"
+      description: "Direct access to pristine beaches with breathtaking ocean views",
+      image: "https://images.pexels.com/photos/29705734/pexels-photo-29705734/free-photo-of-woman-practicing-yoga-on-sandy-beach.jpeg",
+      icon: <FaUmbrellaBeach className="w-8 h-8" />,
+      gradient: "from-blue-400 to-indigo-500",
+      features: ["Private Beach", "Water Sports", "Beach Service", "Sunset Views"]
     },
     {
       title: "Concierge Service",
-      description: "24/7 personalized concierge service to assist with all your needs and requests",
-      image: "https://images.pexels.com/photos/6197123/pexels-photo-6197123.jpeg"
-    },
+      description: "24/7 personalized concierge service to cater to all your needs",
+      image: "https://images.pexels.com/photos/6197123/pexels-photo-6197123.jpeg",
+      icon: <FaConciergeBell className="w-8 h-8" />,
+      gradient: "from-emerald-400 to-teal-500",
+      features: ["24/7 Service", "Tour Planning", "Transportation", "Reservations"]
+    }
   ];
 
   const [selectedArea, setSelectedArea] = useState(null);
@@ -178,7 +197,7 @@ function Amenities() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen"> {/* Añadido contenedor flex */}
+    <>
       {(isLoading || forceShowLottie) ? (
         <div className="fixed inset-0 flex items-center justify-center bg-white">
           <iframe 
@@ -194,232 +213,241 @@ function Amenities() {
           initial="hidden"
           animate="visible"
           variants={fadeIn}
-          className="flex-grow font-sans bg-cover bg-center bg-fixed relative overflow-hidden"
-          style={{
-            backgroundImage: bgImageLoaded ? "url('https://imgur.com/7LcsP6I.jpg')" : "none",
-            backgroundColor: "#f0f0f0",
-          }}
+          className="font-sans min-h-screen bg-cover bg-center bg-fixed relative"
+          style={{ backgroundImage: "url('https://imgur.com/7LcsP6I.jpg')" }}
         >
-          <motion.div 
-            className="bg-black bg-opacity-50 min-h-full"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5, delay: 0.3 }}
-          >
-            <motion.main 
-              className="container mx-auto pt-8 p-4"
-              initial={{ opacity: 0, y: 50 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.5 }}
-            >
-              <motion.h1
-                variants={slideUp}
-                className="text-4xl font-bold mb-8 text-left text-white"
-              >
-                <span className="text-teal-400">Our</span> <span className="text-[#eeb95d]">Amenities</span>
-              </motion.h1>
-              <motion.p variants={slideUp} className="text-xl text-white mb-8">
-                Discover the luxurious amenities at TurquesaBay
-              </motion.p>
+          {/* Overlay con gradiente */}
+          <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/70 to-black/80 backdrop-blur-[2px]" />
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+          <div className="relative min-h-screen py-20">
+            <main className="container mx-auto px-4 max-w-7xl">
+              {/* Header Section */}
+              <motion.div 
+                className="text-center mb-16"
+                variants={slideUp}
+              >
+                <h1 className="text-5xl md:text-6xl font-bold mb-6">
+                  <span className="text-teal-400">Our</span>{' '}
+                  <span className="text-[#eeb95d]">Amenities</span>
+                </h1>
+                <p className="text-white/80 text-lg max-w-2xl mx-auto">
+                  Discover the luxurious amenities at TurquesaBay
+                </p>
+              </motion.div>
+
+              {/* Grid de amenities */}
+              <motion.div 
+                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-24"
+                variants={{
+                  hidden: { opacity: 0 },
+                  show: {
+                    opacity: 1,
+                    transition: { staggerChildren: 0.2 }
+                  }
+                }}
+                initial="hidden"
+                animate="show"
+              >
                 {amenities.map((amenity, index) => (
                   <motion.div
                     key={index}
-                    variants={slideUp}
-                    className="bg-white bg-opacity-80 rounded-lg shadow-md overflow-hidden"
+                    className="group relative overflow-hidden rounded-2xl"
+                    variants={{
+                      hidden: { opacity: 0, y: 50 },
+                      show: { opacity: 1, y: 0 }
+                    }}
+                    whileHover={{ y: -10 }}
+                    transition={{ duration: 0.4 }}
                   >
-                    <div className="h-48 bg-gray-300 flex items-center justify-center">
-                      {amenity.image ? (
-                        <img 
-                          src={amenity.image} 
+                    {/* Card con efecto de cristal */}
+                    <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-white/2 backdrop-blur-[2px] rounded-2xl border border-white/10 group-hover:border-white/20 transition-all duration-300" />
+                    
+                    {/* Contenido de la card */}
+                    <div className="relative p-6 z-10">
+                      <div className="flex items-center gap-4 mb-6">
+                        <div className={`w-12 h-12 rounded-full ${index % 2 === 0 ? 'bg-teal-500/20' : 'bg-[#eeb95d]/20'} flex items-center justify-center`}>
+                          {amenity.icon}
+                        </div>
+                        <h3 className={`text-2xl font-bold ${index % 2 === 0 ? 'text-teal-400' : 'text-[#eeb95d]'}`}>
+                          {amenity.title}
+                        </h3>
+                      </div>
+
+                      <div className="relative h-48 mb-6 rounded-xl overflow-hidden">
+                        <img
+                          src={amenity.image}
                           alt={amenity.title}
-                          className="w-full h-full object-cover"
+                          className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700"
                         />
-                      ) : (
-                        <span className="text-gray-500 text-lg">{amenity.title} Image</span>
-                      )}
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/20 to-transparent" />
+                      </div>
+
+                      <p className="text-white/80 mb-6">
+                        {amenity.description}
+                      </p>
+
+                      <div className="grid grid-cols-2 gap-3">
+                        {amenity.features.map((feature, i) => (
+                          <div key={i} className="flex items-center gap-2">
+                            <FaCheck className={`w-4 h-4 ${index % 2 === 0 ? 'text-teal-400' : 'text-[#eeb95d]'}`} />
+                            <span className="text-sm text-white/70">{feature}</span>
+                          </div>
+                        ))}
+                      </div>
                     </div>
-                    <div className="p-4">
-                      <h3 className="text-xl font-semibold text-teal-600 mb-2">{amenity.title}</h3>
-                      <p className="text-gray-600">{amenity.description}</p>
-                    </div>
+
+                    {/* Efecto de brillo */}
+                    <motion.div
+                      className="absolute inset-0 bg-gradient-to-r from-transparent via-white/3 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"
+                    />
                   </motion.div>
                 ))}
-              </div>
+              </motion.div>
 
-              <motion.section variants={slideUp} className="mt-16">
-                <h2 className="text-3xl font-bold mb-8 text-left text-white">
-                  <span className="text-teal-400">Resort</span> <span className="text-[#eeb95d]">Map</span>
-                </h2>
-                <div className="mb-4 flex space-x-2">
-                  {['bloqueD', 'bloqueCyD'].map((tab) => (
-                    <motion.button
-                      key={tab}
-                      className="px-6 py-2 rounded-full text-sm font-medium focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-opacity-50"
-                      variants={tabVariants}
-                      animate={activeTab === tab ? 'active' : 'inactive'}
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      onClick={() => setActiveTab(tab)}
-                    >
-                      {tab === 'bloqueD' ? 'Block D' : 'Block C and B'}
-                    </motion.button>
-                  ))}
-                </div>
-                <div className="relative inline-block w-full overflow-hidden rounded-lg shadow-lg">
-                  <AnimatePresence mode="wait">
-                    <motion.div
-                      key={activeTab}
-                      variants={imageVariants}
-                      initial="enter"
-                      animate="center"
-                      exit="exit"
-                      transition={{ duration: 0.3 }}
-                    >
-                      <svg
-                        style={{ width: '100%' }}
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 1280 730"
-                      >
-                        <style>
-                          {`
-                            .image-mapper-shape {
-                              fill: rgba(0, 0, 0, 0);
-                              transition: all 0.3s ease;
-                              cursor: pointer;
-                              stroke: rgba(255, 255, 255, 0.3);
-                              stroke-width: 1px;
-                            }
-                            g:hover .image-mapper-shape,
-                            g:active .image-mapper-shape {
-                              fill: rgba(20, 184, 166, 0.5);
-                              stroke: white;
-                              stroke-width: 2px;
-                            }
-                            .speech-bubble-text {
-                              font-size: 16px;
-                              font-weight: bold;
-                              fill: white;
-                              stroke: black;
-                              stroke-width: 0.5px;
-                              paint-order: stroke fill;
-                            }
-                            @media (max-width: 768px) {
-                              .speech-bubble-text {
-                                font-size: 18px;
-                              }
-                              .image-mapper-shape {
-                                stroke-width: 2px;
-                              }
-                            }
-                          `}
-                        </style>
-                        <image
-                          xlinkHref={mapData[activeTab].image}
-                          style={{ width: '1280px' }}
-                        />
-                        {mapData[activeTab].areas.map((area) => (
-                          <g
-                            key={area.id}
-                            onMouseEnter={() => setHoveredArea(area.title)}
-                            onMouseLeave={() => setHoveredArea(null)}
-                            onClick={() => openModal(area)}
-                            onTouchStart={() => {
-                              setTouchedArea(area.title);
-                              setIsTouching(true);
-                            }}
-                            onTouchEnd={() => {
-                              if (isTouching) {
-                                openModal(area);
-                              }
-                              setTouchedArea(null);
-                              setIsTouching(false);
-                            }}
-                            onTouchMove={() => setIsTouching(false)}
+              {/* Resort Map Section */}
+              <motion.section 
+                variants={slideUp} 
+                className="mt-32 mb-20 relative overflow-hidden"
+              >
+                <div className="bg-white/5 backdrop-blur-md rounded-2xl border border-white/10 overflow-hidden">
+                  <div className="text-center p-8 border-b border-white/10">
+                    <h2 className="text-4xl font-bold mb-4">
+                      <span className="text-teal-400">Resort</span>{' '}
+                      <span className="text-[#eeb95d]">Map</span>
+                    </h2>
+                    <p className="text-white/80 max-w-2xl mx-auto">
+                      Explore our luxurious blocks and find your perfect residence
+                    </p>
+                  </div>
+
+                  <div className="p-6">
+                    {/* Tabs con diseño mejorado */}
+                    <div className="flex justify-center mb-8">
+                      <div className="bg-white/5 backdrop-blur-sm p-2 rounded-full border border-white/10">
+                        {['bloqueD', 'bloqueCyD'].map((tab) => (
+                          <motion.button
+                            key={tab}
+                            className={`px-8 py-3 rounded-full text-sm font-medium transition-all duration-300
+                                      ${activeTab === tab 
+                                        ? 'bg-gradient-to-r from-teal-500 to-teal-400 text-white shadow-lg' 
+                                        : 'text-white/70 hover:text-white'}`}
+                            whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.98 }}
+                            onClick={() => setActiveTab(tab)}
                           >
-                            <polygon
-                              className="image-mapper-shape"
-                              points={area.points}
-                            ></polygon>
-                            <text
-                              x={area.x}
-                              y={area.y}
-                              textAnchor="middle"
-                              className="speech-bubble-text"
-                            >
-                              {(hoveredArea === area.title || touchedArea === area.title) ? area.title : ''}
-                            </text>
-                          </g>
+                            {tab === 'bloqueD' ? 'Block D' : 'Block C & B'}
+                          </motion.button>
                         ))}
-                      </svg>
+                      </div>
+                    </div>
+
+                    {/* Contenedor del mapa con efectos */}
+                    <motion.div
+                      className="relative rounded-xl overflow-hidden"
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      whileInView={{ opacity: 1, scale: 1 }}
+                      transition={{ duration: 0.8 }}
+                    >
+                      {/* Mapa interactivo */}
+                      <AnimatePresence mode="wait">
+                        <motion.div
+                          key={activeTab}
+                          variants={imageVariants}
+                          initial="enter"
+                          animate="center"
+                          exit="exit"
+                          transition={{ duration: 0.5 }}
+                          className="relative"
+                        >
+                          <svg
+                            className="w-full h-auto"
+                            viewBox="0 0 1280 730"
+                            style={{ 
+                              filter: 'drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1))',
+                              maxHeight: '70vh'
+                            }}
+                          >
+                            <defs>
+                              <filter id="glow">
+                                <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+                                <feMerge>
+                                  <feMergeNode in="coloredBlur"/>
+                                  <feMergeNode in="SourceGraphic"/>
+                                </feMerge>
+                              </filter>
+                            </defs>
+
+                            <image
+                              xlinkHref={mapData[activeTab].image}
+                              className="w-full h-full"
+                              style={{ filter: 'brightness(1.1) contrast(1.1)' }}
+                            />
+                            
+                            {mapData[activeTab].areas.map((area) => (
+                              <g
+                                key={area.id}
+                                onMouseEnter={() => setHoveredArea(area.title)}
+                                onMouseLeave={() => setHoveredArea(null)}
+                                onClick={() => openModal(area)}
+                                onTouchStart={() => {
+                                  setTouchedArea(area.title);
+                                  setIsTouching(true);
+                                }}
+                                onTouchEnd={() => {
+                                  if (isTouching) {
+                                    openModal(area);
+                                  }
+                                  setTouchedArea(null);
+                                  setIsTouching(false);
+                                }}
+                                onTouchMove={() => setIsTouching(false)}
+                                className="cursor-pointer transition-all duration-300"
+                              >
+                                <polygon
+                                  className="transition-all duration-300"
+                                  points={area.points}
+                                  style={{
+                                    fill: hoveredArea === area.title ? 'rgba(20, 184, 166, 0.3)' : 'rgba(0, 0, 0, 0)',
+                                    stroke: hoveredArea === area.title ? '#14B8A6' : 'rgba(255, 255, 255, 0.3)',
+                                    strokeWidth: hoveredArea === area.title ? '2' : '1',
+                                    filter: hoveredArea === area.title ? 'url(#glow)' : 'none'
+                                  }}
+                                />
+                                
+                                {(hoveredArea === area.title || touchedArea === area.title) && (
+                                  <motion.text
+                                    x={area.x}
+                                    y={area.y}
+                                    initial={{ opacity: 0, y: -10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    className="text-lg font-semibold"
+                                    fill="white"
+                                    textAnchor="middle"
+                                    filter="url(#glow)"
+                                  >
+                                    {area.title}
+                                  </motion.text>
+                                )}
+                              </g>
+                            ))}
+                          </svg>
+                        </motion.div>
+                      </AnimatePresence>
+
+                      {/* Leyenda del mapa */}
+                      <div className="absolute bottom-6 right-6 bg-black/50 backdrop-blur-sm p-4 rounded-xl border border-white/10">
+                        <p className="text-white/90 text-sm font-medium mb-2">Interactive Map Legend:</p>
+                        <div className="flex items-center gap-2 text-sm text-white/70">
+                          <div className="w-3 h-3 rounded-full bg-teal-400/50" />
+                          <span>Hover over areas to explore</span>
+                        </div>
+                      </div>
                     </motion.div>
-                  </AnimatePresence>
+                  </div>
                 </div>
               </motion.section>
-            </motion.main>
-          </motion.div>
-
-          <AnimatePresence>
-            {selectedArea && (
-              <motion.div
-                className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                onClick={closeModal}
-              >
-                <motion.div
-                  className="bg-white rounded-lg p-6 max-w-4xl w-11/12 max-h-[90vh] flex flex-col"
-                  onClick={(e) => e.stopPropagation()}
-                  initial={{ scale: 0.9, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  exit={{ scale: 0.9, opacity: 0 }}
-                >
-                  <h2 className="text-2xl font-bold mb-4 text-gray-800">{selectedArea.title}</h2>
-                  <div 
-                    className="flex-grow overflow-auto"
-                    onWheel={handleWheel}
-                  >
-                    <div
-                      style={{
-                        width: `${100 + zoomLevel}%`,
-                        height: `${100 + zoomLevel}%`,
-                        transition: 'width 0.3s ease, height 0.3s ease'
-                      }}
-                    >
-                      <img
-                        ref={imageRef}
-                        src={selectedArea.image}
-                        alt={selectedArea.title}
-                        className="w-full h-full object-contain"
-                      />
-                    </div>
-                  </div>
-                  <div className="mt-4 flex items-center justify-between">
-                    <button
-                      onClick={closeModal}
-                      className="bg-teal-500 text-white px-4 py-2 rounded hover:bg-teal-600 transition duration-300"
-                    >
-                      Close
-                    </button>
-                    <div className="flex items-center space-x-2 flex-1 ml-4">
-                      <span className="text-gray-600 whitespace-nowrap">Zoom:</span>
-                      <input
-                        type="range"
-                        min="0"
-                        max="100"
-                        value={zoomLevel}
-                        onChange={(e) => handleZoom(Number(e.target.value))}
-                        className="w-full"
-                      />
-                      <span className="text-gray-600 whitespace-nowrap">{zoomLevel}%</span>
-                    </div>
-                  </div>
-                </motion.div>
-              </motion.div>
-            )}
-          </AnimatePresence>
+            </main>
+          </div>
         </motion.div>
       )}
       {showNotification && (
@@ -428,7 +456,7 @@ function Amenities() {
           onClose={() => setShowNotification(false)}
         />
       )}
-    </div>
+    </>
   );
 }
 

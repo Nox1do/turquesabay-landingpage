@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import emailjs from '@emailjs/browser';
 import Notification from '../assets/Notification';
+import { FaBuilding, FaClock, FaPhone, FaEnvelope } from 'react-icons/fa';
 
 function Contact() {
   const [formData, setFormData] = useState({
@@ -119,110 +120,175 @@ function Contact() {
           initial="hidden"
           animate="visible"
           variants={fadeIn}
-          className="font-sans min-h-screen bg-cover bg-center bg-fixed"
+          className="font-sans min-h-screen bg-cover bg-center bg-fixed relative"
           style={{ backgroundImage: "url('https://imgur.com/DRnBROY.jpg')" }}
         >
-          <div className="bg-black bg-opacity-30 min-h-screen py-8">
-            <main className="container mx-auto px-4">
-              <motion.h1 
+          <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/70 to-black/80 backdrop-blur-[2px]" />
+
+          <div className="relative min-h-screen py-20">
+            <main className="container mx-auto px-4 max-w-7xl">
+              <motion.div 
+                className="text-center mb-16"
                 variants={slideUp}
-                className="text-4xl font-bold mb-8 text-left text-white"
               >
-                <span className="text-teal-400">Contact</span>{' '}
-                <span className="text-[#eeb95d]">Us</span>
-              </motion.h1>
+                <h1 className="text-5xl md:text-6xl font-bold mb-6">
+                  <span className="text-teal-400">Get in </span>
+                  <span className="text-[#eeb95d]">Touch</span>
+                </h1>
+                <p className="text-white/80 text-lg max-w-2xl mx-auto">
+                  Ready to discover your dream property? We're here to help you every step of the way
+                </p>
+              </motion.div>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <motion.div variants={slideUp} className="space-y-8">
-                  <div className="p-6 rounded-lg shadow-md bg-white bg-opacity-80">
-                    <h2 className="text-2xl font-semibold text-teal-700 mb-4">Reception Office</h2>
-                    <p className="text-gray-700 mb-2">10103, Santo Domingo, Dominican Republic</p>
-                    <p className="text-gray-700 mb-4">Monday - Friday 9:00 AM - 5:00 PM</p>
-                    
-                    <h3 className="text-xl font-semibold text-teal-700 mb-2">Contact Information</h3>
-                    <p className="text-gray-700 mb-1">Phone: +1-(829) 423-2020</p>
-                    <p className="text-gray-700">
-                      Email: <a href="mailto:turquesabayrd@gmail.com" className="text-teal-600 hover:text-teal-800">
-                        turquesabayrd@gmail.com
-                      </a>
-                    </p>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                <motion.div 
+                  variants={slideUp}
+                  className="space-y-8"
+                >
+                  <div className="bg-white/5 backdrop-blur-md p-8 rounded-2xl border border-white/10">
+                    <div className="flex items-center gap-4 mb-6">
+                      <div className="w-12 h-12 rounded-full bg-teal-500/20 flex items-center justify-center">
+                        <FaBuilding className="w-6 h-6 text-teal-400" />
+                      </div>
+                      <div>
+                        <h3 className="text-xl font-bold text-white">Reception Office</h3>
+                        <p className="text-white/70">Santo Domingo, Dominican Republic</p>
+                      </div>
+                    </div>
+
+                    <div className="space-y-6">
+                      <div className="flex items-center gap-4">
+                        <div className="w-10 h-10 rounded-full bg-[#eeb95d]/20 flex items-center justify-center">
+                          <FaClock className="w-5 h-5 text-[#eeb95d]" />
+                        </div>
+                        <div>
+                          <p className="text-white/70">Monday - Friday</p>
+                          <p className="text-white font-medium">9:00 AM - 5:00 PM</p>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-4">
+                        <div className="w-10 h-10 rounded-full bg-teal-500/20 flex items-center justify-center">
+                          <FaPhone className="w-5 h-5 text-teal-400" />
+                        </div>
+                        <div>
+                          <p className="text-white/70">Phone</p>
+                          <a href="tel:+18294232020" className="text-white font-medium hover:text-teal-400 transition-colors">
+                            +1 (829) 423-2020
+                          </a>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-4">
+                        <div className="w-10 h-10 rounded-full bg-[#eeb95d]/20 flex items-center justify-center">
+                          <FaEnvelope className="w-5 h-5 text-[#eeb95d]" />
+                        </div>
+                        <div>
+                          <p className="text-white/70">Email</p>
+                          <a href="mailto:turquesabayrd@gmail.com" className="text-white font-medium hover:text-[#eeb95d] transition-colors">
+                            turquesabayrd@gmail.com
+                          </a>
+                        </div>
+                      </div>
+                    </div>
                   </div>
 
-                  <div className="p-6 rounded-lg shadow-md bg-white bg-opacity-80">
-                    <h3 className="text-xl font-semibold text-teal-700 mb-4">Location</h3>
-                    <div className="w-full h-64 rounded-lg overflow-hidden">
+                  <div className="bg-white/5 backdrop-blur-md rounded-2xl border border-white/10 overflow-hidden">
+                    <div className="p-6 border-b border-white/10">
+                      <h3 className="text-xl font-bold text-white">Location</h3>
+                    </div>
+                    <div className="aspect-video w-full">
                       <iframe 
                         src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d78178.60200827541!2d-69.61468943408546!3d19.20625671902215!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8eaeff7e40e4fc13%3A0x2d03588e9c980382!2sTurquesa%20bay!5e0!3m2!1sen!2sdo!4v1727051055548!5m2!1sen!2sdo" 
-                        width="100%" 
-                        height="100%" 
+                        className="w-full h-full"
                         style={{border:0}} 
                         allowFullScreen="" 
                         loading="lazy" 
-                        referrerPolicy="no-referrer-when-downgrade"
-                      ></iframe>
+                      />
                     </div>
                   </div>
                 </motion.div>
                 
-                <motion.div variants={slideUp} className="space-y-8">
-                  <div className="p-6 rounded-lg shadow-md bg-white bg-opacity-80">
-                    <h2 className="text-2xl font-semibold text-teal-700 mb-4">Contact Form</h2>
-                    <form onSubmit={handleSubmit} className="space-y-4">
-                      <div>
-                        <label htmlFor="name" className="block text-gray-700 mb-1">Name</label>
-                        <input 
-                          type="text" 
-                          id="name" 
-                          name="name" 
-                          value={formData.name}
-                          onChange={handleChange}
-                          className={`w-full px-3 py-2 border ${errors.name ? 'border-red-500' : 'border-gray-300'} rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 bg-white bg-opacity-50`} 
-                        />
-                        {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name}</p>}
-                      </div>
-                      <div>
-                        <label htmlFor="email" className="block text-gray-700 mb-1">Email</label>
-                        <input 
-                          type="email" 
-                          id="email" 
-                          name="email" 
-                          value={formData.email}
-                          onChange={handleChange}
-                          className={`w-full px-3 py-2 border ${errors.email ? 'border-red-500' : 'border-gray-300'} rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 bg-white bg-opacity-50`} 
-                        />
-                        {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
-                      </div>
-                      <div>
-                        <label htmlFor="subject" className="block text-gray-700 mb-1">Subject</label>
-                        <input 
-                          type="text" 
-                          id="subject" 
-                          name="subject" 
-                          value={formData.subject}
-                          onChange={handleChange}
-                          className={`w-full px-3 py-2 border ${errors.subject ? 'border-red-500' : 'border-gray-300'} rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 bg-white bg-opacity-50`} 
-                        />
-                        {errors.subject && <p className="text-red-500 text-sm mt-1">{errors.subject}</p>}
-                      </div>
-                      <div>
-                        <label htmlFor="message" className="block text-gray-700 mb-1">Message</label>
-                        <textarea 
-                          id="message" 
-                          name="message" 
-                          rows="4" 
-                          value={formData.message}
-                          onChange={handleChange}
-                          className={`w-full px-3 py-2 border ${errors.message ? 'border-red-500' : 'border-gray-300'} rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 bg-white bg-opacity-50`}
-                        ></textarea>
-                        {errors.message && <p className="text-red-500 text-sm mt-1">{errors.message}</p>}
-                      </div>
-                      <button type="submit" className="bg-teal-600 text-white px-4 py-2 rounded-md hover:bg-teal-700 transition duration-300">Send</button>
-                    </form>
-                  </div>
+                <motion.div 
+                  variants={slideUp}
+                  className="bg-white/5 backdrop-blur-md p-8 rounded-2xl border border-white/10"
+                >
+                  <h2 className="text-2xl font-bold text-white mb-6">Send us a Message</h2>
+                  <form onSubmit={handleSubmit} className="space-y-6">
+                    <div>
+                      <label className="block text-white/80 mb-2 text-sm">Name</label>
+                      <input 
+                        type="text" 
+                        name="name" 
+                        value={formData.name}
+                        onChange={handleChange}
+                        className={`w-full px-4 py-3 bg-white/5 border ${errors.name ? 'border-red-500' : 'border-white/10'} 
+                                  rounded-xl focus:outline-none focus:border-teal-400 text-white placeholder-white/40
+                                  transition-colors`}
+                        placeholder="Your name"
+                      />
+                      {errors.name && <p className="text-red-400 text-sm mt-1">{errors.name}</p>}
+                    </div>
+
+                    <div>
+                      <label className="block text-white/80 mb-2 text-sm">Email</label>
+                      <input 
+                        type="email" 
+                        name="email" 
+                        value={formData.email}
+                        onChange={handleChange}
+                        className={`w-full px-4 py-3 bg-white/5 border ${errors.email ? 'border-red-500' : 'border-white/10'} 
+                                  rounded-xl focus:outline-none focus:border-teal-400 text-white placeholder-white/40
+                                  transition-colors`}
+                        placeholder="Your email"
+                      />
+                      {errors.email && <p className="text-red-400 text-sm mt-1">{errors.email}</p>}
+                    </div>
+
+                    <div>
+                      <label className="block text-white/80 mb-2 text-sm">Subject</label>
+                      <input 
+                        type="text" 
+                        name="subject" 
+                        value={formData.subject}
+                        onChange={handleChange}
+                        className={`w-full px-4 py-3 bg-white/5 border ${errors.subject ? 'border-red-500' : 'border-white/10'} 
+                                  rounded-xl focus:outline-none focus:border-teal-400 text-white placeholder-white/40
+                                  transition-colors`}
+                        placeholder="Subject"
+                      />
+                      {errors.subject && <p className="text-red-400 text-sm mt-1">{errors.subject}</p>}
+                    </div>
+
+                    <div>
+                      <label className="block text-white/80 mb-2 text-sm">Message</label>
+                      <textarea 
+                        name="message" 
+                        rows="4" 
+                        value={formData.message}
+                        onChange={handleChange}
+                        className={`w-full px-4 py-3 bg-white/5 border ${errors.message ? 'border-red-500' : 'border-white/10'} 
+                                  rounded-xl focus:outline-none focus:border-teal-400 text-white placeholder-white/40
+                                  transition-colors`}
+                        placeholder="Your message"
+                      />
+                      {errors.message && <p className="text-red-400 text-sm mt-1">{errors.message}</p>}
+                    </div>
+
+                    <button 
+                      type="submit" 
+                      className="w-full py-4 bg-gradient-to-r from-teal-500 to-teal-400 text-white rounded-xl
+                                font-medium hover:from-teal-400 hover:to-teal-500 transition-all duration-300
+                                focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 focus:ring-offset-transparent"
+                    >
+                      Send Message
+                    </button>
+                  </form>
                 </motion.div>
               </div>
             </main>
           </div>
+
           <Notification
             message={notification.message}
             isVisible={notification.visible}
