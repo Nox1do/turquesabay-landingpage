@@ -1,3 +1,16 @@
 # https://www.robotstxt.org/robotstxt.html
 User-agent: *
-Disallow:
+Allow: /
+
+# Sitemap
+Sitemap: https://turquesabay.com/sitemap.xml
+
+# Directories
+Disallow: /private/
+Disallow: /admin/
+Disallow: /temp/
+
+# Files
+Disallow: /*.json$
+Disallow: /*.xml$
+Disallow: /*?*
