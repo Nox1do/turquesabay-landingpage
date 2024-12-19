@@ -16,10 +16,20 @@ function Navbar() {
   };
 
   const socialLinks = [
-    { href: "https://facebook.com/Turquesasrl", icon: faFacebookF },
-    { href: "https://www.instagram.com/turquesabay/", icon: faInstagram },
-    { href: "https://www.youtube.com/@turquesabay", icon: faYoutube },
-    { href: "https://api.whatsapp.com/send?phone=18294232020", icon: faWhatsapp }
+    { 
+      href: "https://facebook.com/Turquesasrl", 
+      icon: faFacebookF,
+      title: "Follow TurquesaBay on Facebook",
+      ariaLabel: "Facebook page"
+    },
+    { 
+      href: "https://www.instagram.com/turquesabay/", 
+      icon: faInstagram,
+      title: "Follow TurquesaBay on Instagram",
+      ariaLabel: "Instagram profile"
+    },
+    { href: "https://www.youtube.com/@turquesabay", icon: faYoutube, title: "Follow TurquesaBay on YouTube", ariaLabel: "YouTube channel" },
+    { href: "https://api.whatsapp.com/send?phone=18294232020", icon: faWhatsapp, title: "Contact TurquesaBay via WhatsApp", ariaLabel: "WhatsApp" }
   ];
 
   const iconVariants = {
@@ -45,11 +55,21 @@ function Navbar() {
             </span>
           </Link>
           <div className="flex items-center space-x-6">
-            <Link to="/" className="text-gray-600 hover:text-teal-600 relative group">
+            <Link 
+              to="/" 
+              title="TurquesaBay Home - Luxury Beachfront Living"
+              aria-label="Home page"
+              className="text-gray-600 hover:text-teal-600 relative group"
+            >
               Home
               <span className="absolute bottom-0 left-0 w-full h-0.5 bg-teal-600 transform scale-x-0 transition-transform duration-300 origin-left group-hover:scale-x-100"></span>
             </Link>
-            <Link to="/amenities" className="text-gray-600 hover:text-teal-600 relative group">
+            <Link 
+              to="/amenities" 
+              title="Explore TurquesaBay's World-Class Amenities"
+              aria-label="View our amenities"
+              className="text-gray-600 hover:text-teal-600 relative group"
+            >
               Amenities
               <span className="absolute bottom-0 left-0 w-full h-0.5 bg-teal-600 transform scale-x-0 transition-transform duration-300 origin-left group-hover:scale-x-100"></span>
             </Link>
@@ -66,6 +86,8 @@ function Navbar() {
                   href={social.href}
                   target="_blank"
                   rel="noopener noreferrer"
+                  title={social.title}
+                  aria-label={social.ariaLabel}
                   className="text-gray-600 hover:text-teal-600"
                   whileHover="hover"
                   variants={iconVariants}
@@ -129,6 +151,8 @@ function Navbar() {
               href={social.href}
               target="_blank"
               rel="noopener noreferrer"
+              title={social.title}
+              aria-label={social.ariaLabel}
               className="text-gray-600 hover:text-teal-600"
               whileHover="hover"
               variants={iconVariants}

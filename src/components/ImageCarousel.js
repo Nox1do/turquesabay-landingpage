@@ -4,31 +4,38 @@ import { motion, AnimatePresence } from 'framer-motion';
 const images = [
   {
     src: 'https://imgur.com/LeMGEgR.jpg',
-    info: 'Panoramic view of the beach and resort'
+    info: 'Stunning beachfront view of TurquesaBay luxury resort with pristine white sand beach',
+    alt: 'TurquesaBay beachfront panoramic view with crystal clear waters and luxury facilities'
   },
   {
     src: 'https://imgur.com/TMyMETs.jpg',
-    info: 'Beautiful infinity pool with ocean view'
+    info: 'Infinity pool overlooking the Caribbean Sea at TurquesaBay',
+    alt: 'Luxurious infinity pool with panoramic ocean views at TurquesaBay resort'
   },
   {
     src: 'https://imgur.com/pKNXJ8j.jpg',
-    info: 'Luxurious rooms with balcony and sea view'
+    info: 'Luxurious rooms with balcony and sea view',
+    alt: 'Luxurious rooms with balcony and sea view'
   },
   {
     src: 'https://imgur.com/DRnBROY.jpg',
-    info: 'Spectacular sunset at the resort beach'
+    info: 'Spectacular sunset at the resort beach',
+    alt: 'Spectacular sunset at the resort beach'
   },
   {
     src: 'https://imgur.com/850JOSq.jpg',
-    info: 'Private beach area with loungers and umbrellas'
+    info: 'Private beach area with loungers and umbrellas',
+    alt: 'Private beach area with loungers and umbrellas'
   },
   {
     src: 'https://imgur.com/s5LURP6.jpg',
-    info: 'Elegant restaurant with ocean view'
+    info: 'Elegant restaurant with ocean view',
+    alt: 'Elegant restaurant with ocean view'
   },
   {
     src: 'https://imgur.com/qx74qKE.jpg',
-    info: 'Breathtaking aerial view of the resort and surroundings'
+    info: 'Breathtaking aerial view of the resort and surroundings',
+    alt: 'Breathtaking aerial view of the resort and surroundings'
   }
 ];
 
@@ -36,6 +43,7 @@ function ImageCarousel() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [modalImage, setModalImage] = useState(null);
   const [direction, setDirection] = useState(0);
+  const [loadedImages, setLoadedImages] = useState({});
 
   const nextImage = useCallback(() => {
     setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
@@ -79,6 +87,13 @@ function ImageCarousel() {
     }
   };
 
+  const handleImageLoad = (index) => {
+    setLoadedImages(prev => ({
+      ...prev,
+      [index]: true
+    }));
+  };
+
   const variants = {
     enter: {
       opacity: 0,
@@ -97,15 +112,34 @@ function ImageCarousel() {
   return (
     <div className="relative overflow-hidden w-full h-96">
       {images.map((image, index) => (
-        <img
-          key={index}
-          src={image.src}
-          alt={`Vista del resort ${index + 1}`}
-          className={`absolute top-0 left-0 w-full h-full object-cover transition-opacity duration-1000 cursor-pointer rounded-lg ${
-            index === currentIndex ? 'opacity-100' : 'opacity-0'
-          }`}
-          onClick={() => openModal(currentIndex)}
-        />
+        <div key={index} className="absolute inset-0">
+          <div
+            className={`absolute inset-0 bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 animate-shimmer
+              ${loadedImages[index] ? 'opacity-0' : 'opacity-100'}
+              transition-opacity duration-300`}
+            style={{
+              backgroundSize: '200% 100%',
+              animation: 'shimmer 1.5s infinite linear'
+            }}
+          />
+          
+          <img
+            src={image.src}
+            alt={image.alt}
+            loading="lazy"
+            onLoad={() => handleImageLoad(index)}
+            className={`
+              absolute top-0 left-0 
+              w-full h-full 
+              object-cover 
+              transition-opacity duration-500 
+              rounded-lg
+              ${loadedImages[index] ? 'opacity-100' : 'opacity-0'}
+              ${index === currentIndex ? 'z-10' : 'z-0'}
+            `}
+            onClick={() => openModal(currentIndex)}
+          />
+        </div>
       ))}
       <button
         className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-teal-500 bg-opacity-50 text-white p-2 rounded-full w-10 h-10 flex items-center justify-center"
@@ -141,7 +175,8 @@ function ImageCarousel() {
                 <motion.img
                   key={modalImage.src}
                   src={modalImage.src}
-                  alt="Vista ampliada del resort"
+                  alt={modalImage.alt}
+                  loading="lazy"
                   className="w-full h-full object-contain rounded-lg"
                   variants={variants}
                   initial="enter"
