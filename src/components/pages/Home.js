@@ -174,14 +174,14 @@ function Home({ isLoading }) {
                   transition={{ duration: 0.8, delay: 0.3 }}
                   className="lg:w-1/2 text-center lg:text-left flex flex-col items-center"
                 >
-                  <h1 className="text-5xl lg:text-4xl font-bold mb-8 leading-tight">
+                  <h1 className="text-5xl lg:text-7xl font-bold mb-8 leading-tight">
                     <motion.span 
                       className="block text-white mb-3 drop-shadow-[0_4px_0px_rgba(0,0,0,1)]"
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.6, delay: 0.4 }}
                     >
-                     Embrace Your
+                     Discover Your
                     </motion.span>
                     <motion.span 
                       className="block"
