@@ -90,14 +90,14 @@ function Contact() {
         templateParams,
         'iW3gI3yUtf2gVC4O-'
       )
-      .then((result) => {
-        console.log('Resultado del envío:', result.text);
-        setNotification({ visible: true, message: 'Message sent successfully!' });
-        setFormData({ name: '', email: '', subject: '', message: '' });
-      }, (error) => {
-        console.log('Error en el envío:', error.text);
-        setNotification({ visible: true, message: 'Failed to send message. Please try again.' });
-      });
+        .then((result) => {
+          console.log('Resultado del envío:', result.text);
+          setNotification({ visible: true, message: 'Message sent successfully!' });
+          setFormData({ name: '', email: '', subject: '', message: '' });
+        }, (error) => {
+          console.log('Error en el envío:', error.text);
+          setNotification({ visible: true, message: 'Failed to send message. Please try again.' });
+        });
     } else {
       console.log('Formulario no válido. Errores:', errors);
     }
@@ -107,16 +107,18 @@ function Contact() {
     <>
       {(isLoading || forceShowLottie) ? (
         <div className="fixed inset-0 flex items-center justify-center bg-white">
-          <iframe 
+          <iframe
+            title="Loading animation"
             src="https://lottie.host/embed/98e3d50b-c427-4a30-8ff7-2098e3cbb814/ZZTiHyhz69.json"
-            width="300" 
+            width="300"
             height="300"
             style={{ border: 'none' }}
             allowFullScreen
-          ></iframe>
+          >  </iframe>
+
         </div>
       ) : (
-        <motion.div 
+        <motion.div
           initial="hidden"
           animate="visible"
           variants={fadeIn}
@@ -127,7 +129,7 @@ function Contact() {
 
           <div className="relative min-h-screen py-20">
             <main className="container mx-auto px-4 max-w-7xl">
-              <motion.div 
+              <motion.div
                 className="text-center mb-16"
                 variants={slideUp}
               >
@@ -139,9 +141,9 @@ function Contact() {
                   Ready to discover your dream property? We're here to help you every step of the way
                 </p>
               </motion.div>
-              
+
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-                <motion.div 
+                <motion.div
                   variants={slideUp}
                   className="space-y-8"
                 >
@@ -198,18 +200,20 @@ function Contact() {
                       <h3 className="text-xl font-bold text-white">Location</h3>
                     </div>
                     <div className="aspect-video w-full">
-                      <iframe 
-                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d78178.60200827541!2d-69.61468943408546!3d19.20625671902215!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8eaeff7e40e4fc13%3A0x2d03588e9c980382!2sTurquesa%20bay!5e0!3m2!1sen!2sdo!4v1727051055548!5m2!1sen!2sdo" 
+                      <iframe
+                        title="TurquesaBay location map"
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d78178.60200827541!2d-69.61468943408546!3d19.20625671902215!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8eaeff7e40e4fc13%3A0x2d03588e9c980382!2sTurquesa%20bay!5e0!3m2!1sen!2sdo!4v1727051055548!5m2!1sen!2sdo"
                         className="w-full h-full"
-                        style={{border:0}} 
-                        allowFullScreen="" 
-                        loading="lazy" 
+                        style={{ border: 0 }}
+                        allowFullScreen=""
+                        loading="lazy"
                       />
+
                     </div>
                   </div>
                 </motion.div>
-                
-                <motion.div 
+
+                <motion.div
                   variants={slideUp}
                   className="bg-white/5 backdrop-blur-md p-8 rounded-2xl border border-white/10"
                 >
@@ -217,9 +221,9 @@ function Contact() {
                   <form onSubmit={handleSubmit} className="space-y-6">
                     <div>
                       <label className="block text-white/80 mb-2 text-sm">Name</label>
-                      <input 
-                        type="text" 
-                        name="name" 
+                      <input
+                        type="text"
+                        name="name"
                         value={formData.name}
                         onChange={handleChange}
                         className={`w-full px-4 py-3 bg-white/5 border ${errors.name ? 'border-red-500' : 'border-white/10'} 
@@ -232,9 +236,9 @@ function Contact() {
 
                     <div>
                       <label className="block text-white/80 mb-2 text-sm">Email</label>
-                      <input 
-                        type="email" 
-                        name="email" 
+                      <input
+                        type="email"
+                        name="email"
                         value={formData.email}
                         onChange={handleChange}
                         className={`w-full px-4 py-3 bg-white/5 border ${errors.email ? 'border-red-500' : 'border-white/10'} 
@@ -247,9 +251,9 @@ function Contact() {
 
                     <div>
                       <label className="block text-white/80 mb-2 text-sm">Subject</label>
-                      <input 
-                        type="text" 
-                        name="subject" 
+                      <input
+                        type="text"
+                        name="subject"
                         value={formData.subject}
                         onChange={handleChange}
                         className={`w-full px-4 py-3 bg-white/5 border ${errors.subject ? 'border-red-500' : 'border-white/10'} 
@@ -262,9 +266,9 @@ function Contact() {
 
                     <div>
                       <label className="block text-white/80 mb-2 text-sm">Message</label>
-                      <textarea 
-                        name="message" 
-                        rows="4" 
+                      <textarea
+                        name="message"
+                        rows="4"
                         value={formData.message}
                         onChange={handleChange}
                         className={`w-full px-4 py-3 bg-white/5 border ${errors.message ? 'border-red-500' : 'border-white/10'} 
@@ -275,8 +279,8 @@ function Contact() {
                       {errors.message && <p className="text-red-400 text-sm mt-1">{errors.message}</p>}
                     </div>
 
-                    <button 
-                      type="submit" 
+                    <button
+                      type="submit"
                       className="w-full py-4 bg-gradient-to-r from-teal-500 to-teal-400 text-white rounded-xl
                                 font-medium hover:from-teal-400 hover:to-teal-500 transition-all duration-300
                                 focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 focus:ring-offset-transparent"
