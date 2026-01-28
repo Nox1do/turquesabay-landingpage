@@ -48,12 +48,13 @@ function Footer() {
             </motion.a>
           ))}
         </div>
-        <p className="mb-2 text-sm">
-          &copy; 2024 TurquesaBay. All rights reserved.
-        </p>
-      </div>
+      <p className="mb-2 text-sm">
+  &copy; {new Date().getFullYear()} TurquesaBay. All rights reserved.
+      </p>
+        </div>
     </motion.footer>
   );
 }
 
 export default Footer;
+
