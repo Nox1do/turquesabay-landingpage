@@ -6,8 +6,12 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
+        sans: ['"DM Sans"', 'system-ui', 'sans-serif'],
         'summer-vibes': ['Summer Vibes', 'cursive']
-      }
+      },
+      backdropBlur: {
+        xs: '2px',
+      },
     },
   },
   plugins: [],
