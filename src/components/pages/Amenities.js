@@ -328,6 +328,7 @@ function Amenities() {
               {/* Resort Map Section */}
               <motion.section 
                 id="residences"
+                initial={false}
                 variants={slideUp} 
                 className="mt-32 mb-20 relative overflow-hidden"
               >
