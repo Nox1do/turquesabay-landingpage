@@ -42,7 +42,6 @@ const images = [
 function ImageCarousel() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [modalImage, setModalImage] = useState(null);
-  const [direction, setDirection] = useState(0);
   const [loadedImages, setLoadedImages] = useState({});
 
   const nextImage = useCallback(() => {

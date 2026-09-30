@@ -32,6 +32,7 @@ function App() {
         {isLoading && (
           <div className="fixed inset-0 flex items-center justify-center bg-white z-50">
             <iframe 
+              title="Loading animation"
               src="https://lottie.host/embed/98e3d50b-c427-4a30-8ff7-2098e3cbb814/ZZTiHyhz69.json"
               width="300" 
               height="300"

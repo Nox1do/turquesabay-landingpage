@@ -6,17 +6,13 @@ import { FaSwimmer, FaDumbbell, FaSpa, FaUtensils, FaUmbrellaBeach, FaConciergeB
 import Notification from '../assets/Notification';
 
 function Amenities() {
-  const [modalImage, setModalImage] = useState(null);
   const [zoomLevel, setZoomLevel] = useState(0);
   const [hoveredArea, setHoveredArea] = useState(null);
   const imageRef = useRef(null);
 
   const [isLoading, setIsLoading] = useState(true);
-  const [bgImageLoaded, setBgImageLoaded] = useState(false);
   const [showNotification, setShowNotification] = useState(false);
   const [forceShowLottie, setForceShowLottie] = useState(true);
-  const [lottieLoaded, setLottieLoaded] = useState(false);
-  const [lottieError, setLottieError] = useState(false);
 
   const [touchedArea, setTouchedArea] = useState(null);
   const [isTouching, setIsTouching] = useState(false);
@@ -34,9 +30,6 @@ function Amenities() {
   useEffect(() => {
     const img = new Image();
     img.src = 'https://imgur.com/7LcsP6I.jpg';
-    img.onload = () => {
-      setBgImageLoaded(true);
-    };
     img.onerror = () => {
       setShowNotification(true);
     };
@@ -49,16 +42,6 @@ function Amenities() {
 
     return () => clearTimeout(timer);
   }, []);
-
-  // Función para manejar la carga del Lottie
-  const handleLottieLoad = () => {
-    setLottieLoaded(true);
-  };
-
-  // Función para manejar el error de carga del Lottie
-  const handleLottieError = () => {
-    setLottieError(true);
-  };
 
   const fadeIn = {
     hidden: { opacity: 0 },
@@ -161,14 +144,6 @@ function Amenities() {
     };
   }, [selectedArea]);
 
-  // SVG hover effects for text display
-  const areas = [
-    { id: 1, points: '876.429,173.827 876.429,247.977 782.83,272.289 757.303,280.798 724.482,290.522 677.075,303.894 678.291,237.037', image: 'https://i.imgur.com/gbo7gra.png', title: 'Block D-III 2 Rooms', x: 750, y: 250 },
-    { id: 2, points: '996.771,209.079 991.909,125.204 1157.23,69.2878 1170.6,83.8746 1168.17,138.576 1141.42,168.965 1064.84,190.845', image: 'https://i.imgur.com/28LWYC9.png', title: 'Block D-IV 3 Rooms', x: 1050, y: 150 },
-    { id: 3, points: '508.11,308.756 624.805,267.426 624.805,318.481 582.26,329.421 555.518,339.145 529.99,346.439 505.679,352.517', image: 'https://i.imgur.com/coH0uuY.png', title: 'Block D-II 2 Rooms', x: 550, y: 320 },
-    { id: 4, points: '474.074,324.558 474.074,364.672 447.331,369.535 427.882,378.044 403.571,384.122 404.786,346.439', image: 'https://i.imgur.com/py4GW1i.png', title: 'Block D-I 2 Rooms', x: 450, y: 350 },
-  ];
-
   const mapData = {
     bloqueD: {
       image: "https://i.imgur.com/FVfvl08.jpg",
@@ -182,19 +157,6 @@ function Amenities() {
     bloqueCyD: {
       image: "https://i.imgur.com/ZC8nxNb.jpg",
       areas: []
-    }
-  };
-
-  const tabVariants = {
-    active: {
-      backgroundColor: '#14B8A6',
-      color: '#FFFFFF',
-      transition: { duration: 0.3 }
-    },
-    inactive: {
-      backgroundColor: '#F3F4F6',
-      color: '#4B5563',
-      transition: { duration: 0.3 }
     }
   };
 
@@ -217,6 +179,7 @@ function Amenities() {
     if (e.touches.length === 2) {
       // Pinch zoom
       setTouchStartDistance(getTouchDistance(e.touches));
+      setCurrentScale(1 + zoomLevel / 100);
     } else if (e.touches.length === 1) {
       // Drag
       setIsDragging(true);
@@ -254,6 +217,7 @@ function Amenities() {
       {(isLoading || forceShowLottie) ? (
         <div className="fixed inset-0 flex items-center justify-center bg-white">
           <iframe 
+            title="Loading animation"
             src="https://lottie.host/embed/98e3d50b-c427-4a30-8ff7-2098e3cbb814/ZZTiHyhz69.json"
             width="300" 
             height="300"
