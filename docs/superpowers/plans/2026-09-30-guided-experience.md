@@ -42,4 +42,16 @@
 **Interfaces:** Keep existing EmailJS template parameter names and IDs. Notification accepts type=success|error, message, isVisible and onClose; Contact owns pending state/ref lock.
 - [x] Add tests for immediate form, duplicate-submit prevention, success reset and failure retention/retry; run and observe failures.
 - [x] Implement accessible form, pending feedback and reliable request lifecycle; connect CTA links.
-- [ ] Run entire suite and CI=true npm run build; inspect desktop/mobile/reduced-motion, review whole diff independently, address important findings, integrate verified release into GitHub using non-forced updates.
+- [x] Run entire suite and CI=true npm run build; inspect desktop/mobile/reduced-motion, review whole diff independently, address important findings, integrate verified release into GitHub using non-forced updates.
+
+## Completion evidence
+
+- Production code commit: 023a39c8123815fcd4ff63895d0707c9b41c7195.
+- `CI=true npm test -- --watchAll=false --runInBand`: 5 suites, 13 tests passed.
+- `CI=true npm run build`: compiled successfully; Vercel production deployment succeeded.
+- Public browser: film preview keyboard traversal, gallery arrows/Tab/Escape/focus restoration, contact labels/immediate content and residence anchor verified. Map heading now 133px below viewport top; sticky header ends at 89px.
+- Mobile captures inspected at 320px (home/gallery) and 390px (contact): controls, inputs and text fit.
+- Reduced motion: explicit `useReducedMotion`, MotionConfig and CSS preference handling checked in source. Browser emulation was unavailable.
+- Independent review found two Important issues; external film playback and stacked narrow gallery controls resolve them. Hosted inspection also caught and verified the anchor animation adjustment.
+- Actual EmailJS delivery was not exercised with real messages; success/failure/request locking were verified with the external send dependency mocked.
+- Existing permit claims, map accessibility and the next residence explorer still require the subsequent content/data release. Generated background video is not included.
