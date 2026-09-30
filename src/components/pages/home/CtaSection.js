@@ -38,10 +38,10 @@ function CtaSection() {
 
           <div className="flex w-full flex-col items-center gap-4 sm:w-auto sm:flex-row">
             <Link
-              to="/contact"
-              className="group flex w-full items-center justify-center gap-2 rounded-full bg-[#eeb95d] px-9 py-3.5 text-base font-bold text-teal-950 shadow-lg shadow-black/20 transition-colors hover:bg-[#f3c879] sm:w-auto"
+              to="/contact?subject=Schedule%20a%20visit"
+              className="action-button group flex w-full items-center justify-center gap-2 rounded-full bg-[#eeb95d] px-9 py-3.5 text-base font-bold text-teal-950 shadow-lg shadow-black/20 transition-colors hover:bg-[#f3c879] sm:w-auto"
             >
-              Get In Touch
+              Schedule a visit
               <FaArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
             </Link>
 

@@ -19,3 +19,14 @@ class IntersectionObserverMock {
 }
 
 global.IntersectionObserver = IntersectionObserverMock;
+
+window.matchMedia = (query) => ({
+  matches: false,
+  media: query,
+  addListener: () => {},
+  removeListener: () => {},
+  addEventListener: () => {},
+  removeEventListener: () => {},
+  dispatchEvent: () => false,
+});
+window.scrollTo = () => {};

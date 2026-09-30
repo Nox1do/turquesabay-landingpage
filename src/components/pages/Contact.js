@@ -1,306 +1,115 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { motion } from 'framer-motion';
+import React, { useEffect, useRef, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import { motion, useReducedMotion } from 'framer-motion';
 import emailjs from '@emailjs/browser';
 import Notification from '../assets/Notification';
-import { FaBuilding, FaClock, FaPhone, FaEnvelope } from 'react-icons/fa';
+import { FaArrowRight, FaEnvelope, FaPhone, FaWhatsapp } from 'react-icons/fa';
+import { CONTACT_PHONE } from './home/homeContent';
+
+const EMPTY_FORM = { name: '', email: '', subject: '', message: '' };
+const FIELDS = [
+  { name: 'name', label: 'Name', placeholder: 'Your name', autoComplete: 'name' },
+  { name: 'email', label: 'Email', placeholder: 'you@example.com', autoComplete: 'email', type: 'email' },
+  { name: 'subject', label: 'Subject', placeholder: 'What would you like to explore?' },
+  { name: 'message', label: 'Message', placeholder: 'Tell us about the residence or visit you have in mind.', multiline: true },
+];
+const MAP_URL = 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d78178.60200827541!2d-69.61468943408546!3d19.20625671902215!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8eaeff7e40e4fc13%3A0x2d03588e9c980382!2sTurquesa%20bay!5e0!3m2!1sen!2sdo!4v1727051055548!5m2!1sen!2sdo';
 
 function Contact() {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    subject: '',
-    message: ''
-  });
-
+  const [params] = useSearchParams();
+  const [formData, setFormData] = useState(() => ({ ...EMPTY_FORM, subject: params.get('subject') || '' }));
   const [errors, setErrors] = useState({});
-  const [notification, setNotification] = useState({ visible: false, message: '' });
-  const [isLoading, setIsLoading] = useState(true);
-  const [forceShowLottie, setForceShowLottie] = useState(true);
-
-  const closeNotification = useCallback(() => {
-    setNotification({ visible: false, message: '' });
+  const [notification, setNotification] = useState({ visible: false, message: '', type: 'success' });
+  const [sending, setSending] = useState(false);
+  const sendingRef = useRef(false);
+  const mounted = useRef(true);
+  const reduced = useReducedMotion();
+  useEffect(() => {
+    mounted.current = true;
+    return () => { mounted.current = false; };
   }, []);
 
-  useEffect(() => {
-    // Asegurarse de que la pantalla de carga se muestre durante al menos 3 segundos
-    const timer = setTimeout(() => {
-      setForceShowLottie(false);
-      setIsLoading(false);
-    }, 3000);
-
-    return () => clearTimeout(timer);
-  }, []);
-
-  useEffect(() => {
-    let timer;
-    if (notification.visible) {
-      timer = setTimeout(closeNotification, 3000);
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setFormData((previous) => ({ ...previous, [name]: value }));
+    setErrors((previous) => ({ ...previous, [name]: undefined }));
+  };
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    if (sendingRef.current) return;
+    const form = event.currentTarget;
+    const nextErrors = {};
+    FIELDS.forEach(({ name, label }) => { if (!formData[name].trim()) nextErrors[name] = `${label} is required`; });
+    if (formData.email.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email.trim())) nextErrors.email = 'Enter a valid email address';
+    setErrors(nextErrors);
+    if (Object.keys(nextErrors).length) {
+      form.elements.namedItem(Object.keys(nextErrors)[0])?.focus();
+      return;
     }
-    return () => clearTimeout(timer);
-  }, [notification.visible, closeNotification]);
-
-  const fadeIn = {
-    hidden: { opacity: 0 },
-    visible: { opacity: 1, transition: { duration: 0.8 } }
-  };
-
-
-  const slideUp = {
-    hidden: { opacity: 0, y: 50 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.8 } }
-  };
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prevState => ({
-      ...prevState,
-      [name]: value
-    }));
-  };
-
-  const validateForm = () => {
-    let tempErrors = {};
-    if (!formData.name.trim()) tempErrors.name = "Name is required";
-    if (!formData.email.trim()) {
-      tempErrors.email = "Email is required";
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      tempErrors.email = "Email is invalid";
-    }
-    if (!formData.subject.trim()) tempErrors.subject = "Subject is required";
-    if (!formData.message.trim()) tempErrors.message = "Message is required";
-    setErrors(tempErrors);
-    return Object.keys(tempErrors).length === 0;
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (validateForm()) {
-      const templateParams = {
-        from_name: formData.name,
-        from_email: formData.email,
-        subject: formData.subject,
-        message: formData.message
-      };
-
-      console.log('Datos del formulario a enviar:', templateParams);
-
-      emailjs.send(
-        'service_f5pnbwy',
-        'template_8khwjj3',
-        templateParams,
-        'iW3gI3yUtf2gVC4O-'
-      )
-        .then((result) => {
-          console.log('Resultado del envío:', result.text);
-          setNotification({ visible: true, message: 'Message sent successfully!' });
-          setFormData({ name: '', email: '', subject: '', message: '' });
-        }, (error) => {
-          console.log('Error en el envío:', error.text);
-          setNotification({ visible: true, message: 'Failed to send message. Please try again.' });
-        });
-    } else {
-      console.log('Formulario no válido. Errores:', errors);
+    sendingRef.current = true;
+    setSending(true);
+    setNotification((previous) => ({ ...previous, visible: false }));
+    try {
+      await emailjs.send('service_f5pnbwy', 'template_8khwjj3', {
+        from_name: formData.name.trim(), from_email: formData.email.trim(),
+        subject: formData.subject.trim(), message: formData.message.trim(),
+      }, 'iW3gI3yUtf2gVC4O-');
+      if (mounted.current) {
+        setNotification({ visible: true, type: 'success', message: 'Message sent successfully. Thank you for contacting TurquesaBay.' });
+        setFormData({ ...EMPTY_FORM });
+      }
+    } catch {
+      if (mounted.current) setNotification({ visible: true, type: 'error', message: 'Could not send your message. Your details are saved in this form; please try again or contact us by phone.' });
+    } finally {
+      sendingRef.current = false;
+      if (mounted.current) setSending(false);
     }
   };
 
   return (
-    <>
-      {(isLoading || forceShowLottie) ? (
-        <div className="fixed inset-0 flex items-center justify-center bg-white">
-          <iframe
-            title="Loading animation"
-            src="https://lottie.host/embed/98e3d50b-c427-4a30-8ff7-2098e3cbb814/ZZTiHyhz69.json"
-            width="300"
-            height="300"
-            style={{ border: 'none' }}
-            allowFullScreen
-          >  </iframe>
-
-        </div>
-      ) : (
-        <motion.div
-          initial="hidden"
-          animate="visible"
-          variants={fadeIn}
-          className="font-sans min-h-screen bg-cover bg-center bg-fixed relative"
-          style={{ backgroundImage: "url('https://imgur.com/DRnBROY.jpg')" }}
-        >
-          <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/70 to-black/80 backdrop-blur-[2px]" />
-
-          <div className="relative min-h-screen py-20">
-            <main className="container mx-auto px-4 max-w-7xl">
-              <motion.div
-                className="text-center mb-16"
-                variants={slideUp}
-              >
-                <h1 className="text-5xl md:text-6xl font-bold mb-6">
-                  <span className="text-teal-400">Get in </span>
-                  <span className="text-[#eeb95d]">Touch</span>
-                </h1>
-                <p className="text-white/80 text-lg max-w-2xl mx-auto">
-                  Ready to discover your dream property? We're here to help you every step of the way
-                </p>
-              </motion.div>
-
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-                <motion.div
-                  variants={slideUp}
-                  className="space-y-8"
-                >
-                  <div className="bg-white/5 backdrop-blur-md p-8 rounded-2xl border border-white/10">
-                    <div className="flex items-center gap-4 mb-6">
-                      <div className="w-12 h-12 rounded-full bg-teal-500/20 flex items-center justify-center">
-                        <FaBuilding className="w-6 h-6 text-teal-400" />
-                      </div>
-                      <div>
-                        <h3 className="text-xl font-bold text-white">Reception Office</h3>
-                        <p className="text-white/70">Santo Domingo, Dominican Republic</p>
-                      </div>
-                    </div>
-
-                    <div className="space-y-6">
-                      <div className="flex items-center gap-4">
-                        <div className="w-10 h-10 rounded-full bg-[#eeb95d]/20 flex items-center justify-center">
-                          <FaClock className="w-5 h-5 text-[#eeb95d]" />
-                        </div>
-                        <div>
-                          <p className="text-white/70">Monday - Friday</p>
-                          <p className="text-white font-medium">9:00 AM - 5:00 PM</p>
-                        </div>
-                      </div>
-
-                      <div className="flex items-center gap-4">
-                        <div className="w-10 h-10 rounded-full bg-teal-500/20 flex items-center justify-center">
-                          <FaPhone className="w-5 h-5 text-teal-400" />
-                        </div>
-                        <div>
-                          <p className="text-white/70">Phone</p>
-                          <a href="tel:+18294232020" className="text-white font-medium hover:text-teal-400 transition-colors">
-                            +1 (829) 423-2020
-                          </a>
-                        </div>
-                      </div>
-
-                      <div className="flex items-center gap-4">
-                        <div className="w-10 h-10 rounded-full bg-[#eeb95d]/20 flex items-center justify-center">
-                          <FaEnvelope className="w-5 h-5 text-[#eeb95d]" />
-                        </div>
-                        <div>
-                          <p className="text-white/70">Email</p>
-                          <a href="mailto:turquesabayrd@gmail.com" className="text-white font-medium hover:text-[#eeb95d] transition-colors">
-                            turquesabayrd@gmail.com
-                          </a>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="bg-white/5 backdrop-blur-md rounded-2xl border border-white/10 overflow-hidden">
-                    <div className="p-6 border-b border-white/10">
-                      <h3 className="text-xl font-bold text-white">Location</h3>
-                    </div>
-                    <div className="aspect-video w-full">
-                      <iframe
-                        title="TurquesaBay location map"
-                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d78178.60200827541!2d-69.61468943408546!3d19.20625671902215!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8eaeff7e40e4fc13%3A0x2d03588e9c980382!2sTurquesa%20bay!5e0!3m2!1sen!2sdo!4v1727051055548!5m2!1sen!2sdo"
-                        className="w-full h-full"
-                        style={{ border: 0 }}
-                        allowFullScreen=""
-                        loading="lazy"
-                      />
-
-                    </div>
-                  </div>
-                </motion.div>
-
-                <motion.div
-                  variants={slideUp}
-                  className="bg-white/5 backdrop-blur-md p-8 rounded-2xl border border-white/10"
-                >
-                  <h2 className="text-2xl font-bold text-white mb-6">Send us a Message</h2>
-                  <form onSubmit={handleSubmit} className="space-y-6">
-                    <div>
-                      <label className="block text-white/80 mb-2 text-sm">Name</label>
-                      <input
-                        type="text"
-                        name="name"
-                        value={formData.name}
-                        onChange={handleChange}
-                        className={`w-full px-4 py-3 bg-white/5 border ${errors.name ? 'border-red-500' : 'border-white/10'} 
-                                  rounded-xl focus:outline-none focus:border-teal-400 text-white placeholder-white/40
-                                  transition-colors`}
-                        placeholder="Your name"
-                      />
-                      {errors.name && <p className="text-red-400 text-sm mt-1">{errors.name}</p>}
-                    </div>
-
-                    <div>
-                      <label className="block text-white/80 mb-2 text-sm">Email</label>
-                      <input
-                        type="email"
-                        name="email"
-                        value={formData.email}
-                        onChange={handleChange}
-                        className={`w-full px-4 py-3 bg-white/5 border ${errors.email ? 'border-red-500' : 'border-white/10'} 
-                                  rounded-xl focus:outline-none focus:border-teal-400 text-white placeholder-white/40
-                                  transition-colors`}
-                        placeholder="Your email"
-                      />
-                      {errors.email && <p className="text-red-400 text-sm mt-1">{errors.email}</p>}
-                    </div>
-
-                    <div>
-                      <label className="block text-white/80 mb-2 text-sm">Subject</label>
-                      <input
-                        type="text"
-                        name="subject"
-                        value={formData.subject}
-                        onChange={handleChange}
-                        className={`w-full px-4 py-3 bg-white/5 border ${errors.subject ? 'border-red-500' : 'border-white/10'} 
-                                  rounded-xl focus:outline-none focus:border-teal-400 text-white placeholder-white/40
-                                  transition-colors`}
-                        placeholder="Subject"
-                      />
-                      {errors.subject && <p className="text-red-400 text-sm mt-1">{errors.subject}</p>}
-                    </div>
-
-                    <div>
-                      <label className="block text-white/80 mb-2 text-sm">Message</label>
-                      <textarea
-                        name="message"
-                        rows="4"
-                        value={formData.message}
-                        onChange={handleChange}
-                        className={`w-full px-4 py-3 bg-white/5 border ${errors.message ? 'border-red-500' : 'border-white/10'} 
-                                  rounded-xl focus:outline-none focus:border-teal-400 text-white placeholder-white/40
-                                  transition-colors`}
-                        placeholder="Your message"
-                      />
-                      {errors.message && <p className="text-red-400 text-sm mt-1">{errors.message}</p>}
-                    </div>
-
-                    <button
-                      type="submit"
-                      className="w-full py-4 bg-gradient-to-r from-teal-500 to-teal-400 text-white rounded-xl
-                                font-medium hover:from-teal-400 hover:to-teal-500 transition-all duration-300
-                                focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 focus:ring-offset-transparent"
-                    >
-                      Send Message
-                    </button>
-                  </form>
-                </motion.div>
-              </div>
-            </main>
-          </div>
-
-          <Notification
-            message={notification.message}
-            isVisible={notification.visible}
-            onClose={closeNotification}
-          />
+    <section className="bg-[#fbfaf7] py-14 sm:py-20">
+      <div className="mx-auto max-w-7xl px-5 sm:px-8">
+        <motion.div initial={{ opacity: 0, y: reduced ? 0 : 18 }} animate={{ opacity: 1, y: 0 }} className="mb-12 max-w-3xl">
+          <p className="mb-5 text-[11px] font-semibold uppercase tracking-[0.2em] text-teal-700">Start a conversation</p>
+          <h1 className="font-serif text-4xl leading-[1.1] tracking-tight text-teal-950 sm:text-6xl">Your next chapter<br /><span className="italic text-[#9b6f30]">starts here.</span></h1>
+          <p className="mt-6 max-w-xl text-base leading-relaxed text-slate-600">Ask about our residences, explore the floor plans, or arrange a visit. Our team is here to help you find your place in Samaná.</p>
         </motion.div>
-      )}
-    </>
+        <div className="grid items-start gap-8 lg:grid-cols-[.9fr_1.1fr] lg:gap-12">
+          <div className="overflow-hidden rounded-2xl bg-[#0b3632] text-white">
+            <img src="/images/terrace.webp" alt="Open-air seating among tropical palms" width="1600" height="1067" className="h-52 w-full object-cover sm:h-64" />
+            <div className="p-6 sm:p-8">
+              <h2 className="mb-6 font-serif text-2xl">Let's talk about your visit.</h2>
+              <div className="space-y-6 text-sm">
+                <a href={CONTACT_PHONE.href} className="flex min-h-11 items-center gap-4 text-white hover:text-[#eeb95d]"><FaPhone className="shrink-0 text-[#eeb95d]" /><span><span className="mb-1 block text-xs text-white/65">Call our team</span>{CONTACT_PHONE.display}</span></a>
+                <a href="mailto:turquesabayrd@gmail.com" className="flex min-h-11 items-center gap-4 text-white hover:text-[#eeb95d]"><FaEnvelope className="shrink-0 text-[#eeb95d]" /><span className="min-w-0 break-all"><span className="mb-1 block text-xs text-white/65">Email</span>turquesabayrd@gmail.com</span></a>
+                <a href="https://api.whatsapp.com/send?phone=18294232020" target="_blank" rel="noopener noreferrer" className="action-button w-full border border-white/25 px-5 py-3 text-sm text-white hover:bg-white/10"><FaWhatsapp size={20} />Chat on WhatsApp<FaArrowRight size={12} /></a>
+                <p className="border-t border-white/15 pt-5 text-xs leading-relaxed text-white/70">Reception office · Santo Domingo, Dominican Republic<br />Monday–Friday · 9:00 AM–5:00 PM</p>
+              </div>
+            </div>
+          </div>
+          <div className="rounded-2xl border border-teal-900/10 bg-white p-6 shadow-sm sm:p-9">
+            <h2 className="font-serif text-2xl text-teal-950 sm:text-3xl">Tell us what you have in mind.</h2>
+            <p className="mb-8 mt-3 text-sm text-slate-500">All fields are required.</p>
+            <form aria-label="Enquire about TurquesaBay" aria-busy={sending} onSubmit={handleSubmit} noValidate className="space-y-5">
+              {FIELDS.map((field) => {
+                const Element = field.multiline ? 'textarea' : 'input';
+                return <div key={field.name}>
+                  <label htmlFor={`contact-${field.name}`} className="mb-2 block text-sm font-semibold text-teal-950">{field.label}</label>
+                  <Element id={`contact-${field.name}`} name={field.name} type={field.multiline ? undefined : field.type || 'text'} rows={field.multiline ? 5 : undefined} autoComplete={field.autoComplete} value={formData[field.name]} onChange={handleChange} disabled={sending} required aria-invalid={Boolean(errors[field.name])} aria-describedby={errors[field.name] ? `error-${field.name}` : undefined} placeholder={field.placeholder} className={`w-full rounded-xl border bg-[#fbfaf7] px-4 py-3 text-base text-slate-800 placeholder:text-slate-400 disabled:opacity-65 ${errors[field.name] ? 'border-red-500' : 'border-teal-900/15'}`} />
+                  {errors[field.name] && <p id={`error-${field.name}`} className="mt-2 text-sm text-red-700">{errors[field.name]}</p>}
+                </div>;
+              })}
+              <button type="submit" disabled={sending} className="action-button w-full bg-teal-900 px-6 py-4 text-sm text-white hover:bg-teal-800 disabled:cursor-wait disabled:opacity-65">{sending ? 'Sending message…' : 'Send message'}{!sending && <FaArrowRight size={13} />}</button>
+            </form>
+          </div>
+        </div>
+        <div className="mt-14 overflow-hidden rounded-2xl border border-teal-900/10 bg-white">
+          <div className="flex items-center justify-between gap-4 p-6"><h2 className="font-serif text-2xl text-teal-950">Find us in Samaná.</h2><span className="hidden text-xs text-slate-500 sm:block">TurquesaBay · Dominican Republic</span></div>
+          <iframe title="TurquesaBay location map" src={MAP_URL} className="h-72 w-full border-0 sm:h-80" allowFullScreen loading="lazy" />
+        </div>
+      </div>
+      <Notification {...notification} isVisible={notification.visible} onClose={() => setNotification((previous) => ({ ...previous, visible: false }))} />
+    </section>
   );
 }
 

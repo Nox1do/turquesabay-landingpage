@@ -11,17 +11,15 @@ import { HERO_VIDEO_ID } from './home/homeContent';
  * Home page. Each section owns its own content and styling, this component
  * is only responsible for page-level state (video modal) and section order.
  */
-function Home({ isLoading }) {
+function Home() {
   const [isVideoOpen, setIsVideoOpen] = useState(false);
-
-  if (isLoading) return null;
 
   return (
     <div className="font-sans">
       <HeroSection onWatchVideo={() => setIsVideoOpen(true)} />
       <GallerySection />
-      <PermitsSection />
       <ExperienceSection />
+      <PermitsSection />
       <CtaSection />
 
       <VideoModal

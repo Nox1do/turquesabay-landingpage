@@ -10,9 +10,7 @@ function Amenities() {
   const [hoveredArea, setHoveredArea] = useState(null);
   const imageRef = useRef(null);
 
-  const [isLoading, setIsLoading] = useState(true);
   const [showNotification, setShowNotification] = useState(false);
-  const [forceShowLottie, setForceShowLottie] = useState(true);
 
   const [touchedArea, setTouchedArea] = useState(null);
   const [isTouching, setIsTouching] = useState(false);
@@ -34,13 +32,6 @@ function Amenities() {
       setShowNotification(true);
     };
 
-    // Asegurarse de que la pantalla de carga se muestre durante al menos 3 segundos
-    const timer = setTimeout(() => {
-      setForceShowLottie(false);
-      setIsLoading(false);
-    }, 3000);
-
-    return () => clearTimeout(timer);
   }, []);
 
   const fadeIn = {
@@ -214,18 +205,6 @@ function Amenities() {
 
   return (
     <>
-      {(isLoading || forceShowLottie) ? (
-        <div className="fixed inset-0 flex items-center justify-center bg-white">
-          <iframe 
-            title="Loading animation"
-            src="https://lottie.host/embed/98e3d50b-c427-4a30-8ff7-2098e3cbb814/ZZTiHyhz69.json"
-            width="300" 
-            height="300"
-            style={{ border: 'none' }}
-            allowFullScreen
-          ></iframe>
-        </div>
-      ) : (
         <motion.div
           initial="hidden"
           animate="visible"
@@ -237,7 +216,7 @@ function Amenities() {
           <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/70 to-black/80 backdrop-blur-[2px]" />
 
           <div className="relative min-h-screen py-20">
-            <main className="container mx-auto px-4 max-w-7xl">
+            <div className="container mx-auto px-4 max-w-7xl">
               {/* Header Section */}
               <motion.div 
                 className="text-center mb-16"
@@ -348,6 +327,7 @@ function Amenities() {
 
               {/* Resort Map Section */}
               <motion.section 
+                id="residences"
                 variants={slideUp} 
                 className="mt-32 mb-20 relative overflow-hidden"
               >
@@ -580,13 +560,14 @@ function Amenities() {
                   </motion.div>
                 )}
               </AnimatePresence>
-            </main>
+            </div>
           </div>
         </motion.div>
-      )}
       {showNotification && (
         <Notification 
-          message="No se pudo cargar la imagen de fondo. Por favor, verifica tu conexión a internet."
+          isVisible={showNotification}
+          type="error"
+          message="The background image could not be loaded. You can still explore the amenities and floor plans."
           onClose={() => setShowNotification(false)}
         />
       )}

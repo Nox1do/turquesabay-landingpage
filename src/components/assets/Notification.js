@@ -1,45 +1,17 @@
 import React from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
+import { FaCheck, FaExclamationCircle } from 'react-icons/fa';
 
-const Notification = ({ message, isVisible, onClose }) => {
-  return (
-    <AnimatePresence>
-      {isVisible && (
-        <motion.div
-          className="fixed inset-0 flex items-center justify-center z-50"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.3 }}
-        >
-          <motion.div
-            className="bg-teal-600 text-white px-8 py-6 rounded-lg shadow-xl max-w-md w-full mx-4"
-            initial={{ scale: 0.8, y: 50, opacity: 0 }}
-            animate={{ scale: 1, y: 0, opacity: 1 }}
-            exit={{ scale: 0.8, y: 50, opacity: 0 }}
-            transition={{ type: "spring", damping: 25, stiffness: 200 }}
-          >
-            <div className="flex items-center justify-between">
-              <div className="flex items-center">
-                <svg className="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
-                <p className="text-lg font-semibold">{message}</p>
-              </div>
-              <button 
-                onClick={onClose}
-                className="text-white hover:text-gray-200 transition-colors duration-200"
-              >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-            </div>
-          </motion.div>
-        </motion.div>
-      )}
-    </AnimatePresence>
-  );
-};
+function Notification({ message, isVisible, onClose, type = 'success' }) {
+  const reduced = useReducedMotion();
+  const isError = type === 'error';
+  return <AnimatePresence>
+    {isVisible && <motion.div role={isError ? 'alert' : 'status'} aria-atomic="true" initial={{ opacity: 0, y: reduced ? 0 : 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: reduced ? 0 : 0.18 }} className={`fixed inset-x-4 bottom-5 z-[60] mx-auto flex max-w-lg items-start gap-4 rounded-2xl border p-5 shadow-xl sm:left-auto sm:right-6 sm:mx-0 ${isError ? 'border-red-200 bg-red-50 text-red-900' : 'border-teal-200 bg-teal-50 text-teal-950'}`}>
+      {isError ? <FaExclamationCircle className="mt-1 shrink-0" /> : <FaCheck className="mt-1 shrink-0" />}
+      <p className="flex-1 text-sm leading-relaxed">{message}</p>
+      <button type="button" aria-label="Dismiss notification" onClick={onClose} className="-my-2 -mr-2 flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-xl hover:bg-black/5">×</button>
+    </motion.div>}
+  </AnimatePresence>;
+}
 
 export default Notification;

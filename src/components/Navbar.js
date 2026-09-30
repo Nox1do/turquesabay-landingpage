@@ -1,168 +1,80 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFacebookF, faInstagram, faYoutube, faWhatsapp } from '@fortawesome/free-brands-svg-icons';
-import { faBars, faTimes } from '@fortawesome/free-solid-svg-icons';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useEffect, useRef, useState } from 'react';
+import { Link, NavLink, useLocation } from 'react-router-dom';
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
+import { FaBars, FaTimes, FaArrowRight, FaWhatsapp } from 'react-icons/fa';
+
+const links = [
+  { to: '/', label: 'Home', aria: 'Home page' },
+  { to: '/amenities', label: 'Amenities', aria: 'View our amenities' },
+  { to: '/contact', label: 'Contact' },
+];
 
 function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const [compact, setCompact] = useState(false);
+  const toggleRef = useRef(null);
+  const location = useLocation();
+  const reduced = useReducedMotion();
 
-  const toggleMenu = () => setIsOpen(!isOpen);
+  useEffect(() => { setIsOpen(false); }, [location]);
+  useEffect(() => {
+    const handleScroll = () => setCompact(window.scrollY > 48);
+    handleScroll();
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleEscape = (event) => {
+      if (event.key === 'Escape') {
+        setIsOpen(false);
+        toggleRef.current?.focus();
+      }
+    };
+    const handleResize = () => { if (window.innerWidth >= 768) setIsOpen(false); };
+    document.addEventListener('keydown', handleEscape);
+    window.addEventListener('resize', handleResize);
+    return () => {
+      document.removeEventListener('keydown', handleEscape);
+      window.removeEventListener('resize', handleResize);
+    };
+  }, [isOpen]);
 
-  const menuVariants = {
-    closed: { opacity: 0, scaleY: 0, originY: 0 },
-    open: { opacity: 1, scaleY: 1, originY: 0 }
-  };
-
-  const socialLinks = [
-    { 
-      href: "https://facebook.com/Turquesasrl", 
-      icon: faFacebookF,
-      title: "Follow TurquesaBay on Facebook",
-      ariaLabel: "Facebook page"
-    },
-    { 
-      href: "https://www.instagram.com/turquesabay/", 
-      icon: faInstagram,
-      title: "Follow TurquesaBay on Instagram",
-      ariaLabel: "Instagram profile"
-    },
-    { href: "https://www.youtube.com/@turquesabay", icon: faYoutube, title: "Follow TurquesaBay on YouTube", ariaLabel: "YouTube channel" },
-    { href: "https://api.whatsapp.com/send?phone=18294232020", icon: faWhatsapp, title: "Contact TurquesaBay via WhatsApp", ariaLabel: "WhatsApp" }
-  ];
-
-  const iconVariants = {
-    hover: {
-      scale: 1.5,
-      transition: {
-        duration: 0.3,
-        ease: "easeInOut",
-      },
-    },
-  };
+  const navigationLinks = (mobile = false) => links.map((link) => (
+    <NavLink key={link.to} to={link.to} end={link.to === '/'} aria-label={link.aria}
+      onClick={() => setIsOpen(false)}
+      className={({ isActive }) => `${mobile ? 'block rounded-xl px-4 py-3' : 'relative px-1 py-2'} text-sm font-semibold transition-colors ${isActive ? 'text-teal-800' : 'text-slate-600 hover:text-teal-800'}`}
+    >
+      {({ isActive }) => <>
+        {link.label}
+        {isActive && !mobile && <motion.span layoutId={reduced ? undefined : 'active-nav'} className="absolute inset-x-1 -bottom-1 h-0.5 rounded-full bg-teal-700" />}
+      </>}
+    </NavLink>
+  ));
 
   return (
-    <nav className="bg-white sticky top-0 z-50">
-      <div className="container mx-auto px-4">
-        {/* Desktop and Tablet Navbar */}
-        <div className="hidden md:flex justify-between items-center py-4">
-          <Link to="/" className="flex items-center">
-            <img src="https://i.imgur.com/46EfL9t.png" alt="TurquesaBay Logo" className="h-12 w-auto mr-3" />
-            <span className="text-2xl font-bold">
-              <span className="text-teal-600">Turquesa</span>
-              <span className="text-[#eeb95d]">Bay</span>
-            </span>
-          </Link>
-          <div className="flex items-center space-x-6">
-            <Link 
-              to="/" 
-              title="TurquesaBay Home - Luxury Beachfront Living"
-              aria-label="Home page"
-              className="text-gray-600 hover:text-teal-600 relative group"
-            >
-              Home
-              <span className="absolute bottom-0 left-0 w-full h-0.5 bg-teal-600 transform scale-x-0 transition-transform duration-300 origin-left group-hover:scale-x-100"></span>
-            </Link>
-            <Link 
-              to="/amenities" 
-              title="Explore TurquesaBay's World-Class Amenities"
-              aria-label="View our amenities"
-              className="text-gray-600 hover:text-teal-600 relative group"
-            >
-              Amenities
-              <span className="absolute bottom-0 left-0 w-full h-0.5 bg-teal-600 transform scale-x-0 transition-transform duration-300 origin-left group-hover:scale-x-100"></span>
-            </Link>
-            <Link to="/contact" className="text-gray-600 hover:text-teal-600 relative group">
-              Contact
-              <span className="absolute bottom-0 left-0 w-full h-0.5 bg-teal-600 transform scale-x-0 transition-transform duration-300 origin-left group-hover:scale-x-100"></span>
-            </Link>
-            <button className="bg-teal-600 text-white px-4 py-2 rounded-full hover:bg-teal-700 transition duration-300">Book Now</button>
-            {/* Social Media Icons */}
-            <div className="flex space-x-4">
-              {socialLinks.map((social, index) => (
-                <motion.a
-                  key={index}
-                  href={social.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  title={social.title}
-                  aria-label={social.ariaLabel}
-                  className="text-gray-600 hover:text-teal-600"
-                  whileHover="hover"
-                  variants={iconVariants}
-                >
-                  <FontAwesomeIcon icon={social.icon} size="lg" />
-                </motion.a>
-              ))}
-            </div>
-          </div>
+    <header className={`sticky top-0 z-40 border-b transition-colors duration-300 ${compact ? 'border-teal-900/10 bg-white/95 shadow-sm backdrop-blur-md' : 'border-stone-200 bg-[#fbfaf7]'}`} data-compact={compact}>
+      <nav aria-label="Main navigation" className="relative mx-auto flex h-[76px] max-w-7xl items-center justify-between gap-4 px-5 md:h-[88px] lg:px-8">
+        <Link to="/" aria-label="TurquesaBay home" className="flex shrink-0 items-center gap-2.5">
+          <motion.img src="https://i.imgur.com/46EfL9t.png" alt="" width="44" height="44" className="h-10 w-10 object-contain md:h-11 md:w-11" animate={{ scale: compact ? 0.9 : 1 }} />
+          <span className="text-xl font-bold tracking-tight md:text-2xl"><span className="text-teal-800">Turquesa</span><span className="text-[#b88030]">Bay</span></span>
+        </Link>
+        <div className="hidden items-center gap-7 md:flex">
+          {navigationLinks()}
+          <a href="https://api.whatsapp.com/send?phone=18294232020" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp" className="hidden text-teal-800 lg:block"><FaWhatsapp size={21} /></a>
+          <Link to="/contact" className="action-button bg-teal-900 px-5 py-3 text-sm text-white hover:bg-teal-800">Schedule a visit <FaArrowRight size={12} /></Link>
         </div>
-
-        {/* Mobile Navbar */}
-        <div className="md:hidden relative">
-          <div className="flex items-center justify-between py-4">
-            <motion.button 
-              onClick={toggleMenu} 
-              className="text-gray-600 hover:text-teal-600 focus:outline-none z-10"
-              whileTap={{ scale: 0.95 }}
-            >
-              <FontAwesomeIcon icon={isOpen ? faTimes : faBars} size="lg" />
-            </motion.button>
-            <motion.div
-              animate={{ x: isOpen ? "-20%" : 0 }}
-              transition={{ duration: 0.3, type: "spring", stiffness: 300, damping: 25 }}
-              className="flex items-center"
-            >
-              <img src="https://i.imgur.com/46EfL9t.png" alt="TurquesaBay Logo" className="h-8 w-auto mr-2" />
-              <span className="text-xl font-bold">
-                <span className="text-teal-600">Turquesa</span>
-                <span className="text-[#eeb95d]">Bay</span>
-              </span>
-            </motion.div>
-            <div className="w-8" /> {/* Spacer */}
-          </div>
-          <AnimatePresence>
-            {isOpen && (
-              <motion.div
-                variants={menuVariants}
-                initial="closed"
-                animate="open"
-                exit="closed"
-                transition={{ duration: 0.3, ease: "easeInOut" }}
-                className="bg-white bg-opacity-90 backdrop-blur-sm py-2 px-4 overflow-hidden"
-              >
-                <div className="flex justify-between items-center space-x-3 text-lg">
-                  <Link to="/" className="text-gray-600 hover:text-teal-600" onClick={toggleMenu}>Home</Link>
-                  <Link to="/amenities" className="text-gray-600 hover:text-teal-600" onClick={toggleMenu}>Amenities</Link>
-                  <Link to="/contact" className="text-gray-600 hover:text-teal-600" onClick={toggleMenu}>Contact</Link>
-                  <button className="bg-teal-600 text-white px-3 py-1 rounded-full hover:bg-teal-700 transition duration-300 text-base" onClick={toggleMenu}>Book Now</button>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
-
-        {/* Social Media Icons (always visible on mobile) */}
-        <div className="md:hidden flex justify-center space-x-6 py-4">
-          {socialLinks.map((social, index) => (
-            <motion.a
-              key={index}
-              href={social.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              title={social.title}
-              aria-label={social.ariaLabel}
-              className="text-gray-600 hover:text-teal-600"
-              whileHover="hover"
-              variants={iconVariants}
-            >
-              <FontAwesomeIcon icon={social.icon} size="lg" />
-            </motion.a>
-          ))}
-        </div>
-      </div>
-    </nav>
+        <button ref={toggleRef} type="button" aria-label={isOpen ? 'Close menu' : 'Open menu'} aria-expanded={isOpen} aria-controls="mobile-menu" onClick={() => setIsOpen((open) => !open)} className="flex h-11 w-11 items-center justify-center rounded-full border border-teal-900/15 text-teal-900 md:hidden">
+          {isOpen ? <FaTimes /> : <FaBars />}
+        </button>
+        <AnimatePresence>
+          {isOpen && <motion.div id="mobile-menu" initial={{ opacity: 0, y: reduced ? 0 : -8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: reduced ? 0 : -8 }} transition={{ duration: reduced ? 0 : 0.18 }} className="absolute inset-x-0 top-full border-b border-stone-200 bg-[#fbfaf7] p-5 shadow-xl md:hidden">
+            {navigationLinks(true)}
+            <Link to="/contact" onClick={() => setIsOpen(false)} className="action-button mt-3 w-full bg-teal-900 px-5 py-3 text-sm text-white">Schedule a visit <FaArrowRight size={12} /></Link>
+          </motion.div>}
+        </AnimatePresence>
+      </nav>
+    </header>
   );
 }
 

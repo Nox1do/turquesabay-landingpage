@@ -8,3 +8,26 @@
   font-family: 'Summer Vibes';
   src: url('./components/assets/fonts/Summer Vibes OTF.otf') format('opentype');
 }
+
+@layer base {
+  body { @apply bg-[#fbfaf7] text-slate-800 antialiased; }
+  ::selection { background: #eeb95d; color: #092f2d; }
+  :focus-visible { outline: 2px solid #0d9488; outline-offset: 5px; }
+  section[id] { scroll-margin-top: 100px; }
+}
+@layer components {
+  .action-button { @apply inline-flex min-h-11 items-center justify-center gap-3 rounded-full font-semibold transition duration-200; }
+  .action-button:hover { transform: translateY(-2px); }
+  .action-button:active { transform: translateY(0) scale(.98); }
+  .skip-link { @apply fixed left-4 top-4 z-[200] -translate-y-24 rounded-lg bg-teal-900 px-5 py-3 text-white; }
+  .skip-link:focus { transform: translateY(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .action-button:hover, .action-button:active { transform: none; }
+}
